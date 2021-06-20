@@ -32,7 +32,9 @@ public class TorsBuilder : MonoBehaviour
             
             if(chance > BORDER)
             {
-                _tunedSectors.Add(_sectorsTuner.TuneSector(_spawnPoint.transform, material, i * DEFAULT_ANGEL));
+                var angel = i * DEFAULT_ANGEL;
+                var position = _spawnPoint.transform;
+                _tunedSectors.Add(_sectorsTuner.TuneSector(position, material, angel, i));
             }
         }
 

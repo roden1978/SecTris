@@ -29,6 +29,7 @@ public sealed class Pillar : MonoBehaviour
         StartCoroutine(NewDownPointPosition(.5f));
     }
 
+   
     private IEnumerator RemoveNotActive(float times)
     {
         while (_create)
@@ -73,6 +74,7 @@ public sealed class Pillar : MonoBehaviour
                 _moved = _torsBuilder.BuildingTor();
             }
         }
+        _fixed.Clear();
         Debug.Log("Game over");
     }
 

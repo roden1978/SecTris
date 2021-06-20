@@ -3,28 +3,31 @@ using UnityEngine;
 
 public class Sector : MonoBehaviour
 {
-    [SerializeField] private Material _material;
-    [SerializeField] private float _angel;
-    private Transform _defaultParent;
+    [SerializeField] private Transform _center;
+    [SerializeField] private Transform _left;
+    [SerializeField] private Transform _right;
     
-    private MeshRenderer _renderer;
-    private Vector3 _center;
-    
+    private Material _material;
+    private float _angel;
+    private int _colorIndex;
+    //private Vector3 _center;
+    private MeshRenderer _meshRenderer;
 
-    private void Awake()
+    private void Start()
     {
-        _renderer = GetComponent<MeshRenderer>();
-        _defaultParent = transform.parent;
-        Debug.Log("Awake");
+        _meshRenderer = GetComponent<MeshRenderer>();
+    }
+    public void SetColorIndex(int index)
+    {
+        _colorIndex = index;
     }
 
-    public Transform GetDefaultParent()
+    private void OnDrawGizmos()
     {
-       return _defaultParent;
-    }
-
-    public void SetDefaultParent(Transform parent)
-    {
-        _defaultParent = parent;
+        Gizmos.DrawRay(_center.position,  _left.position - _center.position);
+        Gizmos.DrawRay(_center.position,  _right.position - _center.position);
+        //Gizmos.DrawRay(_center.position, _right.position);
+        //Gizmos.DrawRay(_center.position, _meshRenderer.);
+        //Gizmos.DrawRay(_meshRenderer.bounds.center, transform.position);
     }
 }
