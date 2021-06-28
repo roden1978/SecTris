@@ -1,4 +1,4 @@
 public interface IMaxYPosition
 {
-  public float value();
+  public float Value();
 }
