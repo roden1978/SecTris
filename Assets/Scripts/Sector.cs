@@ -1,4 +1,6 @@
+using System;
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class Sector : MonoBehaviour
@@ -8,7 +10,7 @@ public class Sector : MonoBehaviour
     private MeshRenderer _meshRenderer;
     private Rigidbody _rigidbody;
     private RaycastHit _hitLeft;
-    private RaycastHit _hitDown;
+    private RaycastHit[] _hitDown;
     
     private float _size;
     private int _colorIndex;
@@ -20,12 +22,12 @@ public class Sector : MonoBehaviour
     private const int LayerMaskSector = 1 << 9;
     private const int LayerMaskPlatform = 1 << 8;
 
-    private void Start()
+    private void Awake()
     {
         _meshRenderer = GetComponent<MeshRenderer>();
         _size = _meshRenderer.bounds.size.y;
         _rigidbody = GetComponent<Rigidbody>();
-        StartCoroutine(CheckBottom(.1f));
+        _hitDown = new RaycastHit[2];
     }
 
     private void Update()
@@ -46,12 +48,14 @@ public class Sector : MonoBehaviour
         return result;
     }
 
-    public bool CastDown()
+    public int CastDown()
     {
         var center = _meshRenderer.bounds.center;
         var hitDownDistance = _size * 2f;
-        var result = Physics.Raycast(center, Vector3.down, out _hitDown, hitDownDistance, LayerMaskSector);
-        return result;
+        var size = Physics.RaycastNonAlloc(center, Vector3.down, _hitDown, hitDownDistance, LayerMaskSector);
+        Debug.DrawRay(center, Vector3.down, Color.red);
+        Debug.Log($"Size {size}");
+        return size;
     }
 
    private void OnCollisionEnter(Collision other)
@@ -63,7 +67,7 @@ public class Sector : MonoBehaviour
             _rigidbody.isKinematic = true;
     }
 
-    private IEnumerator CheckBottom(float delay)
+    /*private IEnumerator CheckBottom(float delay)
     {
         while (gameObject.activeInHierarchy)
         {
@@ -76,11 +80,25 @@ public class Sector : MonoBehaviour
             if (result == false)
                 _rigidbody.isKinematic = false;
         }
+    }*/
+
+    private void FixedUpdate()
+    {
+        var bounds = _meshRenderer.bounds;
+        var center = bounds.center;
+        var maxDistance = bounds.size.y;
+        var result = Physics.Raycast(center, Vector3.down, maxDistance,
+            LayerMaskSector | LayerMaskPlatform);
+        if (result == false)
+            _rigidbody.isKinematic = false;
     }
 
     private void OnDisable()
     {
         transform.SetPositionAndRotation(Vector3.zero, Quaternion.identity);
+        _rigidbody.isKinematic = false;
+        _rigidbody.velocity = Vector3.zero;
+        level = 0;
     }
 
     public void SetColorIndex(int index)
@@ -93,7 +111,11 @@ public class Sector : MonoBehaviour
     public int GetLevel() => level;
 
     public RaycastHit GetHitLeft() => _hitLeft;
-    public RaycastHit GetHitDown() => _hitDown;
+
+    public RaycastHit[] GetHitDown()
+    {
+        return _hitDown;
+    }
     
     
 }

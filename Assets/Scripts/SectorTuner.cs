@@ -6,10 +6,10 @@ public sealed class SectorTuner : MonoBehaviour
 
     private GameObject _tunedSector;
 
-    public GameObject TuneSector(Transform tr, Material material, int angel, int index)
+    public GameObject TuneSector(Vector3 position, Material material, int angel, int index)
     {
         _tunedSector = sectorsPool.GetPooledObject();
-        _tunedSector.transform.position = tr.position;
+        _tunedSector.transform.position = position;
         _tunedSector.transform.Rotate(0, angel, 0);
         
         var meshRenderer = _tunedSector.GetComponent<MeshRenderer>();
@@ -17,10 +17,7 @@ public sealed class SectorTuner : MonoBehaviour
         
         var script = _tunedSector.GetComponent<Sector>();
         script.SetColorIndex(index);
-        var rb = _tunedSector.GetComponent<Rigidbody>();
-        rb.isKinematic = false;
-        
-        
+
         return _tunedSector;
     }
 

@@ -6,7 +6,7 @@ using Random = UnityEngine.Random;
 public class TorusSectors : MonoBehaviour
 {
     [SerializeField] private SectorTuner sectorsTuner;
-    [SerializeField] private GameObject spawnPoint;
+    [SerializeField] private Transform spawnPoint;
     [SerializeField] private Materials materials;
     
     private List<GameObject> _tunedSectors;
@@ -31,7 +31,7 @@ public class TorusSectors : MonoBehaviour
 
             if (chance <= Border) continue;
             var angel = i * DefaultAngel;
-            var position = spawnPoint.transform;
+            var position = spawnPoint.position;
             _tunedSectors.Add(sectorsTuner.TuneSector(position, material, angel, index));
         }
 

@@ -471,7 +471,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   sectorsTuner: {fileID: 1341016538}
-  spawnPoint: {fileID: 1119602741}
+  spawnPoint: {fileID: 1119602742}
   materials: {fileID: 11400000, guid: 41777dbedbd54d748ab823f72ad1b164, type: 2}
 --- !u!1 &127823132
 GameObject:
