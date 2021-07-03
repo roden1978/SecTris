@@ -3,13 +3,13 @@ using UnityEngine;
 
 public class MaxYPosition: IMaxYPosition
 {
-   private List<GameObject> _list;
-   public MaxYPosition(List<GameObject> gameObjects)
+   private readonly List<GameObject> _list;
+   public MaxYPosition(List<GameObject> list)
    {
-      _list = gameObjects;
+      _list = list;
    }
 
-   public float value()
+   public float Value()
    {
       if (_list.Count == 0)
       {

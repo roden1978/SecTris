@@ -4,85 +4,78 @@ using UnityEngine;
 
 public sealed class Pillar : MonoBehaviour
 {
-    [SerializeField] private TorsBuilder _torsBuilder;
-    [SerializeField] private Transform _downPoint;
-
-    private int _count;
+    [SerializeField] private TorusSectors torusSectors;
+    [SerializeField] private Pool pool;
+    
+    private Neighbour _neighbour;
+    private IMaxYPosition _maxYPosition;
+    
     private bool _create;
-    private int _activeSectors;
-    private float[] _yPositions;
     
     private List<GameObject> _moved;
     private List<GameObject> _fixed;
+    private List<GameObject> _active;
 
-    private const float STEP = 0.4f;
-    private const float DOWN_POINT_START_POSITION_Y = 0.05f;
-    private const float STOP_POINT = 5.0f;
+    private const float StopPoint = 5f;
 
     private void Start()
     {
-        _moved = _fixed = new List<GameObject>();
-        _activeSectors = 0;
+        _moved = new List<GameObject>();
+        _fixed = new List<GameObject>();
+        _active = new List<GameObject>();
+        _neighbour = new Neighbour(_fixed);
+        _maxYPosition = new MaxYPosition(_fixed);
         _create = true;
         StartCoroutine(SpawnSectors(.1f));
         StartCoroutine(RemoveNotActive(.5f));
-        StartCoroutine(NewDownPointPosition(.5f));
     }
-
-    private IEnumerator RemoveNotActive(float times)
+   
+    private IEnumerator RemoveNotActive(float delay)
     {
         while (_create)
         {
-            yield return new WaitForSeconds(times);
+            yield return new WaitForSeconds(delay);
             _fixed.RemoveAll(NotActive);
         }
     }
 
-    private bool NotActive(GameObject obj)
+    private bool NotActive(GameObject sector)
     {
-        return !obj.activeInHierarchy;
+        return !sector.activeInHierarchy;
     }
 
-    private IEnumerator SpawnSectors(float times)
+    private IEnumerator SpawnSectors(float delay)
     {
         while (_create)
         {
-            yield return new WaitForSeconds(times);
-            var downPointY = _downPoint.position.y;
-            foreach (var item in _moved)
-            {
-                var positionY = item.transform.position.y;
+            yield return new WaitForSeconds(delay);
 
-                if (positionY > downPointY) _activeSectors++;
-                if (downPointY > STOP_POINT)
-                {
-                    _create = false;
-                    _downPoint.position = new Vector3(0, DOWN_POINT_START_POSITION_Y, 0);
-                }
-            }
-
-            if (!_create) continue;
-            if (_activeSectors > 0) _activeSectors = 0;
-            else
+            _active = pool.GetAllActive();
+            foreach (var item in _active)
             {
-                foreach (var item in _moved)
-                {
+                var rb = item.transform.GetComponent<Rigidbody>();
+                if(rb.isKinematic)
                     _fixed.Add(item);
-                }
-                _moved.Clear();
-                _moved = _torsBuilder.BuildingTor();
+                else
+                    _moved.Add(item);                
             }
+            
+            if (_maxYPosition.Value() > StopPoint)
+                _create = false;
+            
+            _neighbour.Find();
+            
+            if(_moved.Count == 0)
+                torusSectors.Assembly();
+            
+            _moved.Clear();
+            _fixed.Clear();
+            
         }
+        _fixed.Clear();
+        _moved.Clear();
+        _active.Clear();
         Debug.Log("Game over");
     }
 
-    private IEnumerator NewDownPointPosition(float times)
-    {
-        while(_create)
-        {
-            yield return new WaitForSeconds(times);
-            var yPosition = new MaxYPosition(_fixed).value() + STEP;
-            _downPoint.position = new Vector3(0, yPosition, 0);
-        }
-    }
 }
