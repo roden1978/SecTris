@@ -6,6 +6,7 @@ using UnityEngine;
 public class Sector : MonoBehaviour
 {
     [SerializeField] private int level;
+    private Pillar pillar;
 
     private MeshRenderer _meshRenderer;
     private Rigidbody _rigidbody;
@@ -28,13 +29,14 @@ public class Sector : MonoBehaviour
         _size = _meshRenderer.bounds.size.y;
         _rigidbody = GetComponent<Rigidbody>();
         _hitDown = new RaycastHit[2];
+        pillar = FindObjectOfType<Pillar>();
     }
 
-    private void Update()
+    /*private void Update()
     {
         if(_rigidbody.isKinematic)
             level = Mathf.RoundToInt(transform.position.y / _size);
-    }
+    }*/
 
     public bool CastLeft()
     {
@@ -95,6 +97,11 @@ public class Sector : MonoBehaviour
 
     private void OnDisable()
     {
+        ResetSector();
+    }
+
+    private void ResetSector()
+    {
         transform.SetPositionAndRotation(Vector3.zero, Quaternion.identity);
         _rigidbody.isKinematic = false;
         _rigidbody.velocity = Vector3.zero;
@@ -108,7 +115,7 @@ public class Sector : MonoBehaviour
 
     public int GetColorIndex() => _colorIndex;
 
-    public int GetLevel() => level;
+    //public int GetLevel() => level;
 
     public RaycastHit GetHitLeft() => _hitLeft;
 

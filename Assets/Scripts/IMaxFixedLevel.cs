@@ -4,5 +4,5 @@ using UnityEngine;
 
 public interface IMaxFixedLevel
 {
-   public int value();
+   public int Value();
 }

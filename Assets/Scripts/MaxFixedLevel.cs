@@ -10,7 +10,7 @@ public class MaxFixedLevel : IMaxFixedLevel
         _list = list;
     }
     
-    public int value()
+    public int Value()
     {
         if (_list.Count == 0)
         {
@@ -20,10 +20,13 @@ public class MaxFixedLevel : IMaxFixedLevel
       
         foreach (var item in _list)
         {
-            var sector = item.transform.GetComponent<Sector>();
-            if (sector.GetLevel() > maxPosition)
+            var meshRenderer = item.GetComponent<MeshRenderer>();
+            var sectorHeight = meshRenderer.bounds.size.y;
+            var level = Mathf.RoundToInt(item.transform.position.y / sectorHeight);
+            
+            if (level > maxPosition)
             {
-                maxPosition = sector.GetLevel();
+                maxPosition = level;
             }
         }
         return maxPosition;

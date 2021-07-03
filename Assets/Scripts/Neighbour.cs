@@ -5,59 +5,87 @@ using UnityEngine;
 public class Neighbour
 {
     private readonly List<GameObject> _list;
+
     private readonly IMaxFixedLevel _maxFixedLevel;
-    private readonly List<GameObject> _levelList;
-    private readonly List<GameObject> _findSectors;
+
+    //private List<GameObject> _levelList;
+    //private readonly List<GameObject> _findSectors;
     private readonly SectorComparer _sectorComparer;
     private List<GameObject> _sectors;
     private const int StartLevel = 1;
+    private const int SectorsInTorAmount = 5;
+    private GameObject[,] _bucket; 
 
     public Neighbour(List<GameObject> list)
     {
         _list = list;
         _maxFixedLevel = new MaxFixedLevel(_list);
-        _levelList = new List<GameObject>();
-        _findSectors = new List<GameObject>();
+        //_levelList = new List<GameObject>();
+
         _sectors = new List<GameObject>();
         _sectorComparer = new SectorComparer();
     }
 
     public void Find()
     {
-        var levelsAmount = _maxFixedLevel.value();
-        for (var i = 0; i <= levelsAmount; i++)
+        var levelsAmount = _maxFixedLevel.Value() + 1;
+        _bucket = new GameObject[levelsAmount,SectorsInTorAmount];
+        _bucket = FillBucket(levelsAmount);
+    }
+
+    /*private List<GameObject> FindSectorsHorizontalLevel(GameObject[,] bucket)
+    {
+        var findSectors = new List<GameObject>();
+        foreach (var item in list)
+        {
+            var sectorSource = item.GetComponent<Sector>();
+            //var result = sectorSource.CastLeft();
+            if (!sectorSource.CastLeft()) continue;
+            var hit = sectorSource.GetHitLeft();
+            var sectorTarget = hit.collider.gameObject.GetComponent<Sector>();
+            if (sectorSource.GetColorIndex() != sectorTarget.GetColorIndex())
+                findSectors.Clear();
+            else
+            {
+                findSectors.Add(item);
+                findSectors.Add(sectorTarget.gameObject);
+            }
+        }
+
+        return findSectors;
+    }*/
+
+    private GameObject[,] FillBucket(int levelsAmount)
+    {
+        for (var levelIndex = 0; levelIndex < levelsAmount; levelIndex++)
         {
             foreach (var item in _list)
             {
-                var sector = item.transform.GetComponent<Sector>();
-                var level = sector.GetLevel();
-                if (i == level)
+                var meshRenderer = item.GetComponent<MeshRenderer>();
+                var sectorHeight = meshRenderer.bounds.size.y;
+                var level = Mathf.RoundToInt(item.transform.position.y / sectorHeight);
+            
+                if (levelIndex == level)
                 {
-                    _levelList.Add(item);
+                    var angel = Mathf.RoundToInt(item.transform.eulerAngles.y);
+                    var index = new SectorsIndex(angel).Value();
+                
+                    _bucket[levelIndex, index] = item;
                 }
             }
+        }
+        return _bucket;
+    }
+    
+}
 
-            foreach (var item in _levelList)
-            {
-                var sector = item.transform.GetComponent<Sector>();
-                var result = sector.CastLeft();
-                if (result)
-                {
-                    var hit = sector.GetHitLeft();
-                    var hitSector = hit.collider.transform.GetComponent<Sector>();
-                    if (sector.GetColorIndex() != hitSector.GetColorIndex()) continue;
-                    _findSectors.Add(item);
-                    _findSectors.Add(hitSector.gameObject);
-                }
-            }
-
-
-            _sectors = _findSectors.Distinct(_sectorComparer).ToList();
-            _findSectors.Clear();
-
+/*
+ * _sectors = FindSectorsHorizontalLevel(levelList)
+                .Distinct(_sectorComparer)
+                .ToList();
             if (_sectors.Count < 3) _sectors.Clear();
 
-            if (i > StartLevel)
+            /*if (i > StartLevel)
             {
                 foreach (var item in _levelList)
                 {
@@ -73,7 +101,6 @@ public class Neighbour
                                 if (targetSector.GetColorIndex() == sourceSector.GetColorIndex())
                                     _findSectors.Add(targetSector.gameObject);
                             //Debug.Log(targetSector.GetColorIndex());
-
                         }
                     }
 
@@ -92,13 +119,11 @@ public class Neighbour
 
             _findSectors.Clear();
 
-            foreach (var item in _sectors)
-            {
-                item.SetActive(false);
-            }
-
-            _levelList.Clear();
-            _sectors.Clear();
-        }
-    }
+foreach (var item in _sectors)
+{
+    item.SetActive(false);
 }
+
+//_levelList.Clear();
+_sectors.Clear();
+*/
