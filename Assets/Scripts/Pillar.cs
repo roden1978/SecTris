@@ -78,4 +78,15 @@ public sealed class Pillar : MonoBehaviour
         Debug.Log("Game over");
     }
 
+    public void ResetPools()
+    {
+        foreach (var item in _active)
+        {
+            if(item.activeInHierarchy)
+                item.SetActive(false);
+        }
+        _fixed.Clear();
+        _moved.Clear();
+    }
+
 }

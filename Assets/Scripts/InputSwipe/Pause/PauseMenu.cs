@@ -5,6 +5,9 @@ namespace InputSwipe.Pause
     public class PauseMenu : MonoBehaviour
     {
         [SerializeField] private GameObject pausePanel;
+        [SerializeField] private GameObject buttonPanel;
+        [SerializeField] private Pillar pillar;
+        
         private PauseActions _action;
         private bool _isPaused;
 
@@ -50,6 +53,13 @@ namespace InputSwipe.Pause
             Time.timeScale = 1f;
             AudioListener.pause = false;
             _isPaused = false;
+        }
+
+        public void Back()
+        {
+            pausePanel.SetActive(false);
+            buttonPanel.SetActive(true);
+            pillar.ResetPools();
         }
     }
 }
