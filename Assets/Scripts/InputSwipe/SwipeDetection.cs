@@ -57,8 +57,6 @@ namespace InputSwipe
          if (Vector3.Distance(_startPosition, _endPosition) >= minimumDistance &&
              (_endTime - _startTime) <= maxTime)
          {
-            //Debug.DrawLine(_startPosition, _endPosition, Color.magenta, 5f);
-            //Debug.Log("Swipe Detection");
             var direction = _endPosition - _startPosition;
             var direction2D = new Vector2(direction.x, direction.y).normalized;
             SwipeDirection(direction2D);
@@ -71,6 +69,8 @@ namespace InputSwipe
             OnSwipeLeft?.Invoke();
         else if(Vector2.Dot(Vector2.right, direction) > directionThreshold)
             OnSwipeRight?.Invoke();
+        else if(Vector2.Dot(Vector2.down, direction) > directionThreshold)
+           Debug.Log("Down");
       }
    }
 }

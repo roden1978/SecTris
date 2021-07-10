@@ -2,10 +2,11 @@ using UnityEngine;
 
 namespace InputSwipe.Pause
 {
-    public class PauseMenu : MonoBehaviour
+    public class Menu : MonoBehaviour
     {
         [SerializeField] private GameObject pausePanel;
         [SerializeField] private GameObject buttonPanel;
+        [SerializeField] private GameObject gameOverPanel;
         [SerializeField] private Pillar pillar;
         
         private PauseActions _action;
@@ -57,7 +58,10 @@ namespace InputSwipe.Pause
 
         public void Back()
         {
-            pausePanel.SetActive(false);
+            if(pausePanel.activeInHierarchy)
+                pausePanel.SetActive(false);
+            if(gameOverPanel.activeInHierarchy)
+                gameOverPanel.SetActive(false);
             buttonPanel.SetActive(true);
             pillar.ResetPools();
         }

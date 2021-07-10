@@ -1,13 +1,13 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using InputSwipe;
 using UnityEngine;
 
 public sealed class Pillar : MonoBehaviour
 {
     [SerializeField] private TorusSectors torusSectors;
     [SerializeField] private Pool pool;
+    public event Action OnGameOver;
     
     private Neighbour _neighbour;
     private IMaxYPosition _maxYPosition;
@@ -18,7 +18,7 @@ public sealed class Pillar : MonoBehaviour
     private List<GameObject> _fixed;
     private List<GameObject> _active;
 
-    private const float StopPoint = 5f;
+    private const float StopPoint = 4.7f;
     private float _bucketHeight;
 
     private void Start()
@@ -28,11 +28,14 @@ public sealed class Pillar : MonoBehaviour
         _active = new List<GameObject>();
         _neighbour = new Neighbour(_fixed);
         _maxYPosition = new MaxYPosition(_fixed);
-        _create = true;
-        StartCoroutine(SpawnSectors(.1f));
-        StartCoroutine(RemoveNotActive(.5f));
     }
 
+    public void StartSpawn()
+    {
+        _create = true;
+        StartCoroutine(SpawnSectors(.1f));
+        StartCoroutine(RemoveNotActive(.5f)); 
+    }
     private IEnumerator RemoveNotActive(float delay)
     {
         while (_create)
@@ -78,8 +81,8 @@ public sealed class Pillar : MonoBehaviour
         }
         _fixed.Clear();
         _moved.Clear();
-        _active.Clear();
-        Debug.Log("Game over");
+        
+        OnGameOver?.Invoke();
     }
 
     public void ResetPools()
@@ -91,6 +94,7 @@ public sealed class Pillar : MonoBehaviour
         }
         _fixed.Clear();
         _moved.Clear();
+        _active.Clear();
     }
 
     public float BucketHeight => _bucketHeight;
