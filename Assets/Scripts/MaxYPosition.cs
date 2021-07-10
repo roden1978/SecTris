@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class MaxYPosition: IMaxYPosition
@@ -11,19 +12,9 @@ public class MaxYPosition: IMaxYPosition
 
    public float Value()
    {
-      if (_list.Count == 0)
-      {
-         return 0;
-      }
-      var maxPosition = float.MinValue;
-      
-      foreach (var item in _list)
-      {
-         if (item.transform.position.y > maxPosition)
-         {
-            maxPosition = item.transform.position.y;
-         }
-      }
-      return maxPosition;
+      if (_list.Count == 0) return 0;
+      var value = _list.Select(item => 
+         item.transform.position.y).Prepend(float.MinValue).Max();
+      return value;
    }
 }

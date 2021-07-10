@@ -37,24 +37,28 @@ namespace InputSwipe
 
         private void StartTouchPrimary(InputAction.CallbackContext context)
         {
-            if (OnStartTouch != null)
-                OnStartTouch(Utils.ScreenToWorld(_mainCamera, 
+            OnStartTouch?.Invoke(ScreenToWorld(_mainCamera, 
                     _sectorControls.Touch.PrimaryPosition.ReadValue<Vector2>()), 
-                    (float)context.startTime);
+                (float)context.startTime);
         }
         
         private void EndTouchPrimary(InputAction.CallbackContext context)
         {
-            if (OnEndTouch != null)
-                OnEndTouch(Utils.ScreenToWorld(_mainCamera, 
+            OnEndTouch?.Invoke(ScreenToWorld(_mainCamera, 
                     _sectorControls.Touch.PrimaryPosition.ReadValue<Vector2>()),
-                    (float)context.time);
+                (float)context.time);
         }
 
         public Vector2 PrimaryPosition()
         {
-            return Utils.ScreenToWorld(_mainCamera, _sectorControls.Touch.PrimaryPosition.ReadValue<Vector2>());
+            return ScreenToWorld(_mainCamera,
+                _sectorControls.Touch.PrimaryPosition.ReadValue<Vector2>());
         }
-
+        
+        private Vector3 ScreenToWorld(Camera mainCamera, Vector3 position)
+        {
+            position.z = mainCamera.nearClipPlane;
+            return mainCamera.ScreenToWorldPoint(position);
+        }
     }
 }

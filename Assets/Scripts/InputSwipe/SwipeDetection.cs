@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 namespace InputSwipe
@@ -19,6 +20,9 @@ namespace InputSwipe
       private Vector2 _endPosition;
       private float _startTime;
       private float _endTime;
+
+      public event Action OnSwipeRight;
+      public event Action OnSwipeLeft;
       private void Awake()
       {
          _inputPrincipal = InputPrincipal.Instance;
@@ -54,7 +58,7 @@ namespace InputSwipe
              (_endTime - _startTime) <= maxTime)
          {
             //Debug.DrawLine(_startPosition, _endPosition, Color.magenta, 5f);
-            Debug.Log("Swipe Detection");
+            //Debug.Log("Swipe Detection");
             var direction = _endPosition - _startPosition;
             var direction2D = new Vector2(direction.x, direction.y).normalized;
             SwipeDirection(direction2D);
@@ -63,14 +67,11 @@ namespace InputSwipe
 
       private void SwipeDirection(Vector2 direction)
       {
-         if(Vector2.Dot(Vector2.up, direction) > directionThreshold)
-            Debug.Log("Swipe up");
-         else if(Vector2.Dot(Vector2.down, direction) > directionThreshold)
-            Debug.Log("Swipe down");
-         else if(Vector2.Dot(Vector2.left, direction) > directionThreshold)
-            Debug.Log("Swipe left");
-         else if(Vector2.Dot(Vector2.right, direction) > directionThreshold)
-            Debug.Log("Swipe right");
+        if(Vector2.Dot(Vector2.left, direction) > directionThreshold)
+            OnSwipeLeft?.Invoke();
+        else if(Vector2.Dot(Vector2.right, direction) > directionThreshold)
+            OnSwipeRight?.Invoke();
       }
    }
 }
+

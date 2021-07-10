@@ -1,11 +1,14 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using InputSwipe;
 using UnityEngine;
 
 public sealed class Pillar : MonoBehaviour
 {
     [SerializeField] private TorusSectors torusSectors;
     [SerializeField] private Pool pool;
+    [SerializeField] private SwipeDetection swipeDetection;
     
     private Neighbour _neighbour;
     private IMaxYPosition _maxYPosition;
@@ -29,7 +32,19 @@ public sealed class Pillar : MonoBehaviour
         StartCoroutine(SpawnSectors(.1f));
         StartCoroutine(RemoveNotActive(.5f));
     }
-   
+
+    private void OnEnable()
+    {
+        swipeDetection.OnSwipeRight += RotateRight;
+        swipeDetection.OnSwipeLeft += RotateLeft;
+    }
+
+    private void OnDisable()
+    {
+        swipeDetection.OnSwipeRight -= RotateRight;
+        swipeDetection.OnSwipeLeft -= RotateLeft;
+    }
+
     private IEnumerator RemoveNotActive(float delay)
     {
         while (_create)
@@ -87,6 +102,16 @@ public sealed class Pillar : MonoBehaviour
         }
         _fixed.Clear();
         _moved.Clear();
+    }
+
+    private void RotateLeft()
+    {
+        
+    }
+
+    private void RotateRight()
+    {
+        
     }
 
 }

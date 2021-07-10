@@ -549,6 +549,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   torusSectors: {fileID: 102349072}
   pool: {fileID: 1293825868}
+  swipeDetection: {fileID: 1129597128}
 --- !u!114 &102349072
 MonoBehaviour:
   m_ObjectHideFlags: 0
