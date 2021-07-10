@@ -8,7 +8,6 @@ public sealed class Pillar : MonoBehaviour
 {
     [SerializeField] private TorusSectors torusSectors;
     [SerializeField] private Pool pool;
-    [SerializeField] private SwipeDetection swipeDetection;
     
     private Neighbour _neighbour;
     private IMaxYPosition _maxYPosition;
@@ -20,6 +19,7 @@ public sealed class Pillar : MonoBehaviour
     private List<GameObject> _active;
 
     private const float StopPoint = 5f;
+    private float _bucketHeight;
 
     private void Start()
     {
@@ -31,18 +31,6 @@ public sealed class Pillar : MonoBehaviour
         _create = true;
         StartCoroutine(SpawnSectors(.1f));
         StartCoroutine(RemoveNotActive(.5f));
-    }
-
-    private void OnEnable()
-    {
-        swipeDetection.OnSwipeRight += RotateRight;
-        swipeDetection.OnSwipeLeft += RotateLeft;
-    }
-
-    private void OnDisable()
-    {
-        swipeDetection.OnSwipeRight -= RotateRight;
-        swipeDetection.OnSwipeLeft -= RotateLeft;
     }
 
     private IEnumerator RemoveNotActive(float delay)
@@ -74,8 +62,9 @@ public sealed class Pillar : MonoBehaviour
                 else
                     _moved.Add(item);                
             }
-            
-            if (_maxYPosition.Value() > StopPoint)
+
+            _bucketHeight = _maxYPosition.Value();
+            if (_bucketHeight > StopPoint)
                 _create = false;
             
             _neighbour.Find();
@@ -104,14 +93,6 @@ public sealed class Pillar : MonoBehaviour
         _moved.Clear();
     }
 
-    private void RotateLeft()
-    {
-        
-    }
-
-    private void RotateRight()
-    {
-        
-    }
+    public float BucketHeight => _bucketHeight;
 
 }
