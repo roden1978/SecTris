@@ -1,13 +1,13 @@
-using System;
 using System.Collections;
-using System.Collections.Generic;
+using InputSwipe;
 using UnityEngine;
 
 public class Sector : MonoBehaviour
 {
     [SerializeField] private int level;
-    private Pillar pillar;
-
+    [SerializeField, Range(0f, 1000f)] private float rotateSpeed = 500;
+    private SwipeDetection _swipeDetection;
+    private Pillar _pillar;
     private MeshRenderer _meshRenderer;
     private Rigidbody _rigidbody;
     private RaycastHit _hitLeft;
@@ -15,10 +15,16 @@ public class Sector : MonoBehaviour
     
     private float _size;
     private int _colorIndex;
-    
-    //private Vector3 _center;
+    private Quaternion _nextDegree;
+
+    private bool _isLeft;
+    private bool _isRight;
+
+    private const int Left = 1;
+    private const int Right = -1;
 
     private const float Angel = -36;
+    private const float RotateDegrees = 72;
     private const float HitLeftDistance = 1f;
     private const int LayerMaskSector = 1 << 9;
     private const int LayerMaskPlatform = 1 << 8;
@@ -26,17 +32,25 @@ public class Sector : MonoBehaviour
     private void Awake()
     {
         _meshRenderer = GetComponent<MeshRenderer>();
+        _pillar = FindObjectOfType<Pillar>();
+        _swipeDetection = FindObjectOfType<SwipeDetection>();
         _size = _meshRenderer.bounds.size.y;
         _rigidbody = GetComponent<Rigidbody>();
         _hitDown = new RaycastHit[2];
-        pillar = FindObjectOfType<Pillar>();
     }
 
-    /*private void Update()
+    private void RotateSectors(float degrees, int direction)
     {
-        if(_rigidbody.isKinematic)
-            level = Mathf.RoundToInt(transform.position.y / _size);
-    }*/
+        
+        var minPoint = _pillar.BucketHeight + _size + _size / 2;
+        if (!_rigidbody.isKinematic && transform.position.y > minPoint && transform.rotation != _nextDegree)
+        {
+            var originalRot = transform.rotation;    
+            transform.rotation = Quaternion.Slerp(originalRot, 
+                originalRot * Quaternion.AngleAxis(degrees * direction, Vector3.up),
+                Time.deltaTime * rotateSpeed);
+        }
+    }
 
     public bool CastLeft()
     {
@@ -69,22 +83,32 @@ public class Sector : MonoBehaviour
             _rigidbody.isKinematic = true;
     }
 
-    /*private IEnumerator CheckBottom(float delay)
+    private IEnumerator SwitchLeft(float delay)
     {
-        while (gameObject.activeInHierarchy)
-        {
-            yield return new WaitForSeconds(delay);
-            var bounds = _meshRenderer.bounds;
-            var center = bounds.center;
-            var maxDistance = bounds.size.y;
-            var result = Physics.Raycast(center, Vector3.down, maxDistance,
-                                            LayerMaskSector | LayerMaskPlatform);
-            if (result == false)
-                _rigidbody.isKinematic = false;
-        }
-    }*/
+        _isLeft = true;
+        yield return new WaitForSeconds(delay);
+        _isLeft = false;
+    }
+    
+    private IEnumerator SwitchRight(float delay)
+    {
+        _isRight = true;
+        yield return new WaitForSeconds(delay);
+        _isRight = false;
+    }
 
     private void FixedUpdate()
+    {
+        CheckBottom();
+
+        if (_isRight)
+            RotateSectors(RotateDegrees, Right);
+
+        if (_isLeft)
+            RotateSectors(RotateDegrees, Left);
+    }
+
+    private void CheckBottom()
     {
         var bounds = _meshRenderer.bounds;
         var center = bounds.center;
@@ -95,9 +119,30 @@ public class Sector : MonoBehaviour
             _rigidbody.isKinematic = false;
     }
 
+    private void OnEnable()
+    {
+        _swipeDetection.OnSwipeRight += RotateRight;
+        _swipeDetection.OnSwipeLeft += RotateLeft;
+    }
+
     private void OnDisable()
     {
         ResetSector();
+        _swipeDetection.OnSwipeRight -= RotateRight;
+        _swipeDetection.OnSwipeLeft -= RotateLeft;
+    }
+    private void RotateLeft()
+    {
+        var originalRot = transform.rotation;
+        _nextDegree = originalRot * Quaternion.AngleAxis(RotateDegrees * Left, Vector3.up);
+        StartCoroutine(SwitchLeft(0.5f));
+    }
+
+    private void RotateRight()
+    {
+        var originalRot = transform.rotation;
+        _nextDegree = originalRot * Quaternion.AngleAxis(RotateDegrees * Right, Vector3.up);
+        StartCoroutine(SwitchRight(0.5f));
     }
 
     private void ResetSector()
