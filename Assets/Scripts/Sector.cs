@@ -42,7 +42,7 @@ public class Sector : MonoBehaviour
     private void RotateSectors(float degrees, int direction)
     {
         
-        var minPoint = _pillar.BucketHeight + _size + _size / 2;
+        var minPoint = _pillar.BucketHeight;
         if (!_rigidbody.isKinematic && transform.position.y > minPoint && transform.rotation != _nextDegree)
         {
             var originalRot = transform.rotation;    
@@ -157,13 +157,8 @@ public class Sector : MonoBehaviour
     {
         _colorIndex = index;
     }
-
     public int GetColorIndex() => _colorIndex;
-
-    //public int GetLevel() => level;
-
     public RaycastHit GetHitLeft() => _hitLeft;
-
     public RaycastHit[] GetHitDown()
     {
         return _hitDown;
