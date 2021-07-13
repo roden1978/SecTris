@@ -3,26 +3,29 @@ using UnityEngine;
 
 public class Pool : MonoBehaviour 
 {
-    [SerializeField] private GameObject _prefab;
-    [SerializeField] private int _capacity;
+    [SerializeField] private GameObject prefab;
+    [SerializeField] private int capacity;
         
     private List<GameObject> _pool;
     private List<GameObject> _activeObjects;
+    private int _index;
         
     private void Start ()
     {
         _pool = new List<GameObject>();
         _activeObjects = new List<GameObject>();
-        Initialize(_prefab, _capacity);
+        Initialize(prefab, capacity);
     }
 
     private void Initialize(GameObject prefab, int size)
     {
         for (int i = 0; i < size; i++)
         {
-            var pooledObject = Instantiate(prefab, transform);
+            var pooledObject = Instantiate(prefab, transform); 
+            pooledObject.name = "Sector(" + _index + ")";
             pooledObject.SetActive(false);
             _pool.Add(pooledObject);
+            _index++;
         }
     }
        
@@ -37,7 +40,9 @@ public class Pool : MonoBehaviour
             }               
         }
             
-        var pooledObject = Instantiate(_prefab, transform);
+        var pooledObject = Instantiate(prefab, transform);
+        pooledObject.name = "Sector(" + _index + ")";
+        _index++;
         _pool.Add(pooledObject);
 
         return pooledObject;

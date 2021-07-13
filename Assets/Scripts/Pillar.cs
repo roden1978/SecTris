@@ -85,17 +85,7 @@ public sealed class Pillar : MonoBehaviour
         OnGameOver?.Invoke();
     }
 
-    public void ResetPools()
-    {
-        foreach (var item in _active)
-        {
-            if(item.activeInHierarchy)
-                item.SetActive(false);
-        }
-        _fixed.Clear();
-        _moved.Clear();
-        _active.Clear();
-    }
+    
 
     public float BucketHeight => _bucketHeight;
 
