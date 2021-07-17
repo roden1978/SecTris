@@ -1,12 +1,15 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using InputSwipe;
 using UnityEngine;
 
 public sealed class Pillar : MonoBehaviour
 {
     [SerializeField] private TorusSectors torusSectors;
     [SerializeField] private Pool pool;
+    [SerializeField] private SwipeDetection swipeDetection;
+    
     public event Action OnGameOver;
     
     private Neighbour _neighbour;
@@ -28,6 +31,16 @@ public sealed class Pillar : MonoBehaviour
         _active = new List<GameObject>();
         _neighbour = new Neighbour(_fixed);
         _maxYPosition = new MaxYPosition(_fixed);
+    }
+
+    private void OnEnable()
+    {
+        swipeDetection.OnSwipeDown += Fall;
+    }
+
+    private void OnDisable()
+    {
+        swipeDetection.OnSwipeDown -= Fall;
     }
 
     public void StartSpawn()
@@ -85,6 +98,18 @@ public sealed class Pillar : MonoBehaviour
         OnGameOver?.Invoke();
     }
 
+    private void Fall()
+    {
+        var fallingSectors = pool.GetAllActive();
+        
+        foreach (var sector in fallingSectors)
+        {
+            var sectorRigidbody = sector.transform.GetComponent<Rigidbody>();
+            if(!sectorRigidbody.isKinematic)
+                sectorRigidbody.drag = 0;               
+        }
+      
+    }
     
 
     public float BucketHeight => _bucketHeight;

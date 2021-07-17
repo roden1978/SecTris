@@ -642,6 +642,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   torusSectors: {fileID: 102349072}
   pool: {fileID: 1293825868}
+  swipeDetection: {fileID: 1129597128}
 --- !u!114 &102349072
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2249,7 +2250,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   pausePanel: {fileID: 2042183065}
   gameOverPanel: {fileID: 8506007}
-  blow: {fileID: 1932661041}
+  engineer: {fileID: 1932661042}
 --- !u!1 &1447064141
 GameObject:
   m_ObjectHideFlags: 0
@@ -2841,7 +2842,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1687258581}
   m_LocalRotation: {x: 0.2588191, y: 0, z: 0, w: 0.9659258}
-  m_LocalPosition: {x: 0, y: 6.37, z: -6.81}
+  m_LocalPosition: {x: 0, y: 5.75, z: -5.73}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -3481,9 +3482,10 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1932661040}
+  - component: {fileID: 1932661042}
   - component: {fileID: 1932661041}
   m_Layer: 6
-  m_Name: BlowPoint
+  m_Name: Engeneer
   m_TagString: Untagged
   m_Icon: {fileID: 5721338939258241955, guid: 0000000000000000d000000000000000, type: 0}
   m_NavMeshLayer: 0
@@ -3515,12 +3517,24 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 619eaa38c5f247a4e91a0eafdf8e3648, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  pool: {fileID: 1293825868}
-  platform: {fileID: 1834142526}
-  mainPanel: {fileID: 1982135851}
   radius: 4
   force: 35
-  delay: 5
+--- !u!114 &1932661042
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1932661039}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c8b6284bd3a84934f99e79af2befae55, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  pool: {fileID: 1293825868}
+  mainPanel: {fileID: 1982135851}
+  blow: {fileID: 1932661041}
+  time: 3
 --- !u!1 &1967643721
 GameObject:
   m_ObjectHideFlags: 0
@@ -3667,6 +3681,7 @@ GameObject:
   - component: {fileID: 1982135854}
   - component: {fileID: 1982135853}
   - component: {fileID: 1982135855}
+  - component: {fileID: 1982135856}
   m_Layer: 5
   m_Name: MainPanel
   m_TagString: Untagged
@@ -3753,6 +3768,18 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
+--- !u!114 &1982135856
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1982135851}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c456a910a92e340419a04b1008d5eb1c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &2042183065
 GameObject:
   m_ObjectHideFlags: 0

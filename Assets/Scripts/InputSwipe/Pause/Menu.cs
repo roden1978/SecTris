@@ -5,12 +5,8 @@ namespace InputSwipe.Pause
     public class Menu : MonoBehaviour
     {
         [SerializeField] private GameObject pausePanel;
-        //[SerializeField] private GameObject buttonPanel;
         [SerializeField] private GameObject gameOverPanel;
-        //[SerializeField] private Pillar pillar;
-        [SerializeField] private Blow blow;
-        
-        
+        [SerializeField] private Engineer engineer;
         private PauseActions _action;
         private bool _isPaused;
 
@@ -64,9 +60,7 @@ namespace InputSwipe.Pause
                 pausePanel.SetActive(false);
             if(gameOverPanel.activeInHierarchy)
                 gameOverPanel.SetActive(false);
-            blow.Action();
-            //buttonPanel.SetActive(true);
-            //pillar.ResetPools();
+            engineer.Detonate();
         }
     }
 }
