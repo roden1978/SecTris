@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Sector : MonoBehaviour
 {
-   [SerializeField, Range(0f, 1000f)] private float rotateSpeed = 500;
+   [SerializeField, Range(0f, 100)] private float rotateSpeed = 100;
     private SwipeDetection _swipeDetection;
     private Pillar _pillar;
     private MeshRenderer _meshRenderer;
@@ -13,6 +13,7 @@ public class Sector : MonoBehaviour
     private RaycastHit[] _hitDown;
     
     private float _size;
+    private float _drag;
     private int _colorIndex;
     private Quaternion _nextDegree;
 
@@ -22,11 +23,9 @@ public class Sector : MonoBehaviour
 
     private const int Left = 1;
     private const int Right = -1;
-    //private int _level;
     private const float Angel = -36;
     private const float RotateDegrees = 72;
     private const float HitLeftDistance = 1f;
-    private float _drag;
     private const int LayerMaskSector = 1 << 9;
     private const int LayerMaskPlatform = 1 << 8;
 
@@ -171,7 +170,6 @@ public class Sector : MonoBehaviour
         _rigidbody.isKinematic = false;
         _rigidbody.velocity = Vector3.zero;
         _rigidbody.drag = _drag;
-        //_level = 0;
     }
 
     public void SetColorIndex(int index)
