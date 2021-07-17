@@ -14,13 +14,14 @@ public class Engineer: MonoBehaviour
         var sectors = pool.GetAllActive();
         foreach (var sector in sectors)
         {
-            var rb = sector.GetComponent<Rigidbody>();
-            rb.isKinematic = false;
-            rb.constraints = RigidbodyConstraints.None;
+            var sectorRigidbody = sector.GetComponent<Rigidbody>();
+            sectorRigidbody.isKinematic = false;
+            sectorRigidbody.constraints = RigidbodyConstraints.None;
+            sectorRigidbody.drag = 0;
         }
     }
 
-    public void DeactivateSectors()
+    private void DeactivateSectors()
     {
         var sectors = pool.GetAllActive();
         foreach (var sector in sectors
@@ -30,17 +31,16 @@ public class Engineer: MonoBehaviour
         }
     }
 
-    public void RestoreSectorsConstraints()
+    private void RestoreSectorsConstraints()
     {
         var sectors = pool.GetAllActive();
         foreach (var sector in sectors)
         {
-            var rb = sector.GetComponent<Rigidbody>();
+            var sectorRigidbody = sector.GetComponent<Rigidbody>();
 
-            rb.constraints = RigidbodyConstraints.FreezeRotation |
-                             RigidbodyConstraints.FreezePositionX |
-                             RigidbodyConstraints.FreezePositionZ;
-            rb.drag = 5;
+            sectorRigidbody.constraints = RigidbodyConstraints.FreezeRotation |
+                                          RigidbodyConstraints.FreezePositionX |
+                                          RigidbodyConstraints.FreezePositionZ;
         }
     }
 

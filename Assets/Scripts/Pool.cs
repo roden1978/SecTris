@@ -14,12 +14,12 @@ public class Pool : MonoBehaviour
     {
         _pool = new List<GameObject>();
         _activeObjects = new List<GameObject>();
-        Initialize(prefab, capacity);
+        Initialize();
     }
 
-    private void Initialize(GameObject prefab, int size)
+    private void Initialize()
     {
-        for (int i = 0; i < size; i++)
+        for (int i = 0; i < capacity; i++)
         {
             var pooledObject = Instantiate(prefab, transform); 
             pooledObject.name = "Sector(" + _index + ")";

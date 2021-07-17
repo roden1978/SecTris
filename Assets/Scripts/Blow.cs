@@ -3,7 +3,7 @@ using UnityEngine;
 public class Blow : MonoBehaviour
 {
     [SerializeField, Range(0, 10)] private float radius = 5;
-    [SerializeField, Range(0, 1000)] private float force = 200;
+    [SerializeField, Range(0, 100)] private float force = 35;
     
     private const int LayerMaskSector = 1 << 9;
 
