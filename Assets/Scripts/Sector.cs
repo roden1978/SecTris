@@ -4,8 +4,7 @@ using UnityEngine;
 
 public class Sector : MonoBehaviour
 {
-    [SerializeField] private int level;
-    [SerializeField, Range(0f, 1000f)] private float rotateSpeed = 500;
+   [SerializeField, Range(0f, 1000f)] private float rotateSpeed = 500;
     private SwipeDetection _swipeDetection;
     private Pillar _pillar;
     private MeshRenderer _meshRenderer;
@@ -19,13 +18,15 @@ public class Sector : MonoBehaviour
 
     private bool _isLeft;
     private bool _isRight;
+    private bool _collision = true;
 
     private const int Left = 1;
     private const int Right = -1;
-
+    //private int _level;
     private const float Angel = -36;
     private const float RotateDegrees = 72;
     private const float HitLeftDistance = 1f;
+    private float _drag;
     private const int LayerMaskSector = 1 << 9;
     private const int LayerMaskPlatform = 1 << 8;
 
@@ -37,6 +38,7 @@ public class Sector : MonoBehaviour
         _size = _meshRenderer.bounds.size.y;
         _rigidbody = GetComponent<Rigidbody>();
         _hitDown = new RaycastHit[2];
+        _drag = _rigidbody.drag;
     }
 
     private void RotateSectors(float degrees, int direction)
@@ -76,11 +78,18 @@ public class Sector : MonoBehaviour
 
    private void OnCollisionEnter(Collision other)
     {
-        if (_rigidbody.isKinematic) return;
-        var contactPoint = other.GetContact(0);
-        var center = _meshRenderer.bounds.center;
-        if (contactPoint.point.y < center.y)
-            _rigidbody.isKinematic = true;
+        if(_collision)
+        {
+            if (_rigidbody.isKinematic) return;
+            var contactPoint = other.GetContact(0);
+            var center = _meshRenderer.bounds.center;
+            
+            if (contactPoint.point.y < center.y)
+            {
+                _rigidbody.isKinematic = true;
+                _rigidbody.drag = _drag;
+            }
+        }
     }
 
     private IEnumerator SwitchLeft(float delay)
@@ -123,6 +132,8 @@ public class Sector : MonoBehaviour
     {
         _swipeDetection.OnSwipeRight += RotateRight;
         _swipeDetection.OnSwipeLeft += RotateLeft;
+        _pillar.OnGameOver += OffCollision;
+        _collision = true;
     }
 
     private void OnDisable()
@@ -130,8 +141,15 @@ public class Sector : MonoBehaviour
         ResetSector();
         _swipeDetection.OnSwipeRight -= RotateRight;
         _swipeDetection.OnSwipeLeft -= RotateLeft;
+        _pillar.OnGameOver -= OffCollision;
     }
-    private void RotateLeft()
+
+    private void OffCollision()
+    {
+        _collision = false;
+    }
+    
+   private void RotateLeft()
     {
         var originalRot = transform.rotation;
         _nextDegree = originalRot * Quaternion.AngleAxis(RotateDegrees * Left, Vector3.up);
@@ -145,12 +163,15 @@ public class Sector : MonoBehaviour
         StartCoroutine(SwitchRight(0.5f));
     }
 
+    
+
     private void ResetSector()
     {
         transform.SetPositionAndRotation(Vector3.zero, Quaternion.identity);
         _rigidbody.isKinematic = false;
         _rigidbody.velocity = Vector3.zero;
-        level = 0;
+        _rigidbody.drag = _drag;
+        //_level = 0;
     }
 
     public void SetColorIndex(int index)

@@ -23,6 +23,7 @@ namespace InputSwipe
 
       public event Action OnSwipeRight;
       public event Action OnSwipeLeft;
+      public event Action OnSwipeDown;
       private void Awake()
       {
          _inputPrincipal = InputPrincipal.Instance;
@@ -70,7 +71,7 @@ namespace InputSwipe
         else if(Vector2.Dot(Vector2.right, direction) > directionThreshold)
             OnSwipeRight?.Invoke();
         else if(Vector2.Dot(Vector2.down, direction) > directionThreshold)
-           Debug.Log("Down");
+            OnSwipeDown?.Invoke();
       }
    }
 }

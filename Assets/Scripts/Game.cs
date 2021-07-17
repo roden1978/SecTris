@@ -36,8 +36,7 @@ public class Game : MonoBehaviour
 
     private void GameOver()
     {
-        Time.timeScale = 0;
-        if(gameOverPanel.activeInHierarchy == false)
+       if(gameOverPanel.activeInHierarchy == false)
             gameOverPanel.SetActive(true);
     }
 }
