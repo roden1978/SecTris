@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -8,11 +9,9 @@ namespace InputSwipe
     {
         private SectorControls _sectorControls;
         private Camera _mainCamera;
-        public delegate void StartTouch(Vector2 position, float time);
-        public delegate void EndTouch(Vector2 position, float time);
 
-        public event StartTouch OnStartTouch;
-        public event EndTouch OnEndTouch;
+        public event Action<Vector2, float> OnStartTouch;
+        public event Action<Vector2, float> OnEndTouch;
         private void Awake()
         {
             _sectorControls = new SectorControls();
@@ -24,7 +23,7 @@ namespace InputSwipe
             _sectorControls.Enable();
         }
 
-        private void OnDisable()
+        private void OnDisable() 
         {
             _sectorControls.Disable();
         }
@@ -57,7 +56,7 @@ namespace InputSwipe
         
         private Vector3 ScreenToWorld(Camera mainCamera, Vector3 position)
         {
-            position.z = mainCamera.nearClipPlane;
+            position.z = mainCamera.nearClipPlane - mainCamera.transform.position.z;
             return mainCamera.ScreenToWorldPoint(position);
         }
     }

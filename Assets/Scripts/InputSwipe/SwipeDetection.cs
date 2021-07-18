@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using UnityEngine;
 
 namespace InputSwipe
@@ -13,8 +14,13 @@ namespace InputSwipe
 
       [SerializeField, Range(0f, 1f)] 
       private float directionThreshold = .9f;
-         
-   
+
+      [SerializeField] private GameObject trail;
+      [SerializeField, Range(0f, 1f)] private float trailOffsetY = 0.5f;
+      private const float TrailOffsetZ = - 1f;
+      
+
+      private Coroutine _coroutine;   
       private InputPrincipal _inputPrincipal;
       private Vector2 _startPosition;
       private Vector2 _endPosition;
@@ -45,9 +51,25 @@ namespace InputSwipe
       {
          _startPosition = position;
          _startTime = time;
+         trail.SetActive(true);
+         trail.transform.position = position;
+         _coroutine = StartCoroutine(Trail());
+      }
+
+      private IEnumerator Trail()
+      {
+         while (true)
+         {
+            var trailPosition = new Vector3(_inputPrincipal.PrimaryPosition().x, 
+               _inputPrincipal.PrimaryPosition().y + trailOffsetY, TrailOffsetZ);
+            trail.transform.position = trailPosition;
+            yield return null;
+         }
       }
       private void SwipeEnd(Vector2 position, float time)
       {
+         trail.SetActive(false);
+         StopCoroutine(_coroutine);
          _endPosition = position;
          _endTime = time;
          DetectSwipe();
