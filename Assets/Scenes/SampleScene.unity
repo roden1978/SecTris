@@ -628,6 +628,8 @@ MonoBehaviour:
   torusSectors: {fileID: 102349072}
   pool: {fileID: 1293825868}
   swipeDetection: {fileID: 1129597128}
+  menu: {fileID: 1404601526}
+  game: {fileID: 1687258583}
 --- !u!114 &102349072
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1076,7 +1078,7 @@ GameObject:
   - component: {fileID: 472603665}
   - component: {fileID: 472603664}
   m_Layer: 5
-  m_Name: BackButton
+  m_Name: PauseBackButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1147,8 +1149,8 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1404601526}
-        m_TargetAssemblyTypeName: InputSwipe.Pause.PauseMenu, Assembly-CSharp
-        m_MethodName: Back
+        m_TargetAssemblyTypeName: InputSwipe.Pause.Menu, Assembly-CSharp
+        m_MethodName: PauseBack
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -2237,7 +2239,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   pausePanel: {fileID: 2042183065}
   gameOverPanel: {fileID: 8506007}
-  engineer: {fileID: 1932661042}
+  game: {fileID: 1687258583}
 --- !u!1 &1447064141
 GameObject:
   m_ObjectHideFlags: 0
@@ -2671,8 +2673,9 @@ GameObject:
   - component: {fileID: 1680819712}
   - component: {fileID: 1680819714}
   - component: {fileID: 1680819713}
+  - component: {fileID: 1680819715}
   m_Layer: 5
-  m_Name: BackGround
+  m_Name: Background
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2717,7 +2720,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: b0ded4ef3dca1ac4e83b601de9290cb9, type: 3}
+  m_Sprite: {fileID: 21300000, guid: ddc1542eb1e2ad049a82b7f1c436748b, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -2735,6 +2738,20 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1680819711}
   m_CullTransparentMesh: 1
+--- !u!114 &1680819715
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1680819711}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bbef89a355d70f1478714091043cd12c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  backgrounds: {fileID: 11400000, guid: 5bbf2ac15ce7c544f960d5c40d8835f7, type: 2}
+  image: {fileID: 1680819713}
 --- !u!1 &1687258581
 GameObject:
   m_ObjectHideFlags: 0
@@ -2778,6 +2795,8 @@ MonoBehaviour:
   buttonPanel: {fileID: 1982135851}
   gameOverPanel: {fileID: 8506007}
   pillar: {fileID: 102349071}
+  background: {fileID: 1680819715}
+  pool: {fileID: 1293825868}
 --- !u!20 &1687258584
 Camera:
   m_ObjectHideFlags: 0
@@ -2787,8 +2806,8 @@ Camera:
   m_GameObject: {fileID: 1687258581}
   m_Enabled: 1
   serializedVersion: 2
-  m_ClearFlags: 1
-  m_BackGroundColor: {r: 0.19215687, g: 0.3019608, b: 0.4745098, a: 0}
+  m_ClearFlags: 2
+  m_BackGroundColor: {r: 0, g: 0, b: 0, a: 0}
   m_projectionMatrixMode: 1
   m_GateFitMode: 2
   m_FOVAxisMode: 0
@@ -3642,8 +3661,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 619eaa38c5f247a4e91a0eafdf8e3648, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  radius: 4
-  force: 35
+  radius: 3
+  force: 25
 --- !u!114 &1932661042
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3656,10 +3675,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c8b6284bd3a84934f99e79af2befae55, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  menu: {fileID: 1404601526}
   pool: {fileID: 1293825868}
   mainPanel: {fileID: 1982135851}
   blow: {fileID: 1932661041}
-  time: 3
+  time: 2
 --- !u!1 &1967643721
 GameObject:
   m_ObjectHideFlags: 0
@@ -4069,8 +4089,8 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4278190080
-  m_fontColor: {r: 0, g: 0, b: 0, a: 1}
+    rgba: 4292477183
+  m_fontColor: {r: 1, g: 0, b: 0.854969, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:

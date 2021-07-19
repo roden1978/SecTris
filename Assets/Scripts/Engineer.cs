@@ -1,13 +1,26 @@
+using System;
 using System.Collections;
 using System.Linq;
+using InputSwipe.Pause;
 using UnityEngine;
 
 public class Engineer: MonoBehaviour
 {
+    [SerializeField] private Menu menu;
     [SerializeField] private Pool pool;
     [SerializeField] private GameObject mainPanel;
     [SerializeField] private Blow blow;
     [SerializeField] private float time;
+
+    private void OnEnable()
+    {
+        menu.OnBack += Detonate;
+    }
+
+    private void OnDisable()
+    {
+        menu.OnBack -= Detonate;
+    }
 
     private void PrepareSectors()
     {
@@ -37,14 +50,14 @@ public class Engineer: MonoBehaviour
         foreach (var sector in sectors)
         {
             var sectorRigidbody = sector.GetComponent<Rigidbody>();
-
+            
             sectorRigidbody.constraints = RigidbodyConstraints.FreezeRotation |
                                           RigidbodyConstraints.FreezePositionX |
                                           RigidbodyConstraints.FreezePositionZ;
         }
     }
 
-    public void Detonate()
+    private void Detonate()
     {
         StartCoroutine(ActivateMainPanel(time));
         PrepareSectors();

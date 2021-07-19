@@ -6,7 +6,7 @@ public class Sector : MonoBehaviour
 {
    [SerializeField, Range(0f, 100)] private float rotateSpeed = 100;
     private SwipeDetection _swipeDetection;
-    private Pillar _pillar;
+    private Game _game;
     private MeshRenderer _meshRenderer;
     private Rigidbody _rigidbody;
     private RaycastHit _hitLeft;
@@ -32,7 +32,7 @@ public class Sector : MonoBehaviour
     private void Awake()
     {
         _meshRenderer = GetComponent<MeshRenderer>();
-        _pillar = FindObjectOfType<Pillar>();
+        _game = FindObjectOfType<Game>();
         _swipeDetection = FindObjectOfType<SwipeDetection>();
         _size = _meshRenderer.bounds.size.y;
         _rigidbody = GetComponent<Rigidbody>();
@@ -43,7 +43,7 @@ public class Sector : MonoBehaviour
     private void RotateSectors(float degrees, int direction)
     {
         
-        var minPoint = _pillar.BucketHeight;
+        var minPoint = _game.BucketHeight;
         if (!_rigidbody.isKinematic && transform.position.y > minPoint && transform.rotation != _nextDegree)
         {
             var originalRot = transform.rotation;    
@@ -131,7 +131,7 @@ public class Sector : MonoBehaviour
     {
         _swipeDetection.OnSwipeRight += RotateRight;
         _swipeDetection.OnSwipeLeft += RotateLeft;
-        _pillar.OnGameOver += OffCollision;
+        _game.OnGameOver += OffCollision;
         _collision = true;
     }
 
@@ -140,7 +140,7 @@ public class Sector : MonoBehaviour
         ResetSector();
         _swipeDetection.OnSwipeRight -= RotateRight;
         _swipeDetection.OnSwipeLeft -= RotateLeft;
-        _pillar.OnGameOver -= OffCollision;
+        _game.OnGameOver -= OffCollision;
     }
 
     private void OffCollision()

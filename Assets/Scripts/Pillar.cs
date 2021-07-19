@@ -1,7 +1,7 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using InputSwipe;
+using InputSwipe.Pause;
 using UnityEngine;
 
 public sealed class Pillar : MonoBehaviour
@@ -9,11 +9,12 @@ public sealed class Pillar : MonoBehaviour
     [SerializeField] private TorusSectors torusSectors;
     [SerializeField] private Pool pool;
     [SerializeField] private SwipeDetection swipeDetection;
+    [SerializeField] private Menu menu;
+    [SerializeField] private Game game;
     
-    public event Action OnGameOver;
     
     private Neighbour _neighbour;
-    private IMaxYPosition _maxYPosition;
+    
     
     private bool _create;
     
@@ -21,26 +22,32 @@ public sealed class Pillar : MonoBehaviour
     private List<GameObject> _fixed;
     private List<GameObject> _active;
 
-    private const float StopPoint = 4.7f;
-    private float _bucketHeight;
+    
+    //private float _bucketHeight;
 
+    private const string SpawnSectorsName = "SpawnSectors";
+    private const string RemoveNotActiveName = "RemoveNotActive";
     private void Start()
     {
         _moved = new List<GameObject>();
         _fixed = new List<GameObject>();
         _active = new List<GameObject>();
         _neighbour = new Neighbour(_fixed);
-        _maxYPosition = new MaxYPosition(_fixed);
+        
     }
 
     private void OnEnable()
     {
         swipeDetection.OnSwipeDown += Fall;
+        menu.OnBack += StopGame;
+        game.OnGameOver += StopGame;
     }
 
     private void OnDisable()
     {
         swipeDetection.OnSwipeDown -= Fall;
+        menu.OnBack -= StopGame;
+        game.OnGameOver -= StopGame;
     }
 
     public void StartSpawn()
@@ -70,18 +77,12 @@ public sealed class Pillar : MonoBehaviour
             yield return new WaitForSeconds(delay);
 
             _active = pool.GetAllActive();
-            foreach (var item in _active)
+            foreach (var sector in _active)
             {
-                var rb = item.transform.GetComponent<Rigidbody>();
-                if(rb.isKinematic)
-                    _fixed.Add(item);
-                else
-                    _moved.Add(item);                
+                var sectorRigidbody = sector.transform.GetComponent<Rigidbody>();
+                if(!sectorRigidbody.isKinematic)
+                    _moved.Add(sector);                
             }
-
-            _bucketHeight = _maxYPosition.Value();
-            if (_bucketHeight > StopPoint)
-                _create = false;
             
             _neighbour.Find();
             
@@ -89,13 +90,9 @@ public sealed class Pillar : MonoBehaviour
                 torusSectors.Assembly();
             
             _moved.Clear();
-            _fixed.Clear();
             
         }
-        _fixed.Clear();
         _moved.Clear();
-        
-        OnGameOver?.Invoke();
     }
 
     private void Fall()
@@ -110,8 +107,9 @@ public sealed class Pillar : MonoBehaviour
         }
       
     }
-    
 
-    public float BucketHeight => _bucketHeight;
-
+    private void StopGame()
+    {
+        _create = false;
+    }
 }

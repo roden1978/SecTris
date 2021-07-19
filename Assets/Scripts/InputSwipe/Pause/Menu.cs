@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 namespace InputSwipe.Pause
@@ -6,9 +7,11 @@ namespace InputSwipe.Pause
     {
         [SerializeField] private GameObject pausePanel;
         [SerializeField] private GameObject gameOverPanel;
-        [SerializeField] private Engineer engineer;
+        [SerializeField] private Game game;
         private PauseActions _action;
         private bool _isPaused;
+
+        public event Action OnBack;
 
         private void Awake()
         {
@@ -56,11 +59,17 @@ namespace InputSwipe.Pause
 
         public void Back()
         {
-            if(pausePanel.activeInHierarchy)
-                pausePanel.SetActive(false);
-            if(gameOverPanel.activeInHierarchy)
-                gameOverPanel.SetActive(false);
-            engineer.Detonate();
+            OnBack?.Invoke();
+            gameOverPanel.SetActive(false);
+            game.SetGameOver(true);
+            Time.timeScale = 1f;
         }
+
+        public void PauseBack()
+        {
+            pausePanel.SetActive(false);
+            gameOverPanel.SetActive(true);
+        }
+      
     }
 }
