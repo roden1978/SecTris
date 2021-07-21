@@ -1,7 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using InputSwipe;
-using InputSwipe.Pause;
 using UnityEngine;
 
 public sealed class Pillar : MonoBehaviour
@@ -9,24 +8,18 @@ public sealed class Pillar : MonoBehaviour
     [SerializeField] private TorusSectors torusSectors;
     [SerializeField] private Pool pool;
     [SerializeField] private SwipeDetection swipeDetection;
-    [SerializeField] private Menu menu;
     [SerializeField] private Game game;
     
     
     private Neighbour _neighbour;
     
     
-    private bool _create;
+    private bool _spawn;
     
     private List<GameObject> _moved;
     private List<GameObject> _fixed;
     private List<GameObject> _active;
 
-    
-    //private float _bucketHeight;
-
-    private const string SpawnSectorsName = "SpawnSectors";
-    private const string RemoveNotActiveName = "RemoveNotActive";
     private void Start()
     {
         _moved = new List<GameObject>();
@@ -39,26 +32,26 @@ public sealed class Pillar : MonoBehaviour
     private void OnEnable()
     {
         swipeDetection.OnSwipeDown += Fall;
-        menu.OnBack += StopGame;
         game.OnGameOver += StopGame;
+        game.OnGameStart += GameStartSpawn;
     }
 
     private void OnDisable()
     {
         swipeDetection.OnSwipeDown -= Fall;
-        menu.OnBack -= StopGame;
         game.OnGameOver -= StopGame;
+        game.OnGameStart -= GameStartSpawn;
     }
 
-    public void StartSpawn()
+    private void GameStartSpawn()
     {
-        _create = true;
+        _spawn = true;
         StartCoroutine(SpawnSectors(.1f));
         StartCoroutine(RemoveNotActive(.5f)); 
     }
     private IEnumerator RemoveNotActive(float delay)
     {
-        while (_create)
+        while (_spawn)
         {
             yield return new WaitForSeconds(delay);
             _fixed.RemoveAll(NotActive);
@@ -72,7 +65,7 @@ public sealed class Pillar : MonoBehaviour
 
     private IEnumerator SpawnSectors(float delay)
     {
-        while (_create)
+        while (_spawn)
         {
             yield return new WaitForSeconds(delay);
 
@@ -110,6 +103,6 @@ public sealed class Pillar : MonoBehaviour
 
     private void StopGame()
     {
-        _create = false;
+        _spawn = false;
     }
 }

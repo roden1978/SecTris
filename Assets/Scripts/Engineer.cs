@@ -1,12 +1,10 @@
-using System;
 using System.Collections;
 using System.Linq;
-using InputSwipe.Pause;
 using UnityEngine;
 
 public class Engineer: MonoBehaviour
 {
-    [SerializeField] private Menu menu;
+    [SerializeField] private Game game;
     [SerializeField] private Pool pool;
     [SerializeField] private GameObject mainPanel;
     [SerializeField] private Blow blow;
@@ -14,12 +12,12 @@ public class Engineer: MonoBehaviour
 
     private void OnEnable()
     {
-        menu.OnBack += Detonate;
+        game.OnGameOver += Detonate;
     }
 
     private void OnDisable()
     {
-        menu.OnBack -= Detonate;
+        game.OnGameOver -= Detonate;
     }
 
     private void PrepareSectors()
