@@ -18,9 +18,10 @@ namespace InputSwipe
       [SerializeField] private GameObject trail;
       [SerializeField, Range(0f, 1f)] private float trailOffsetY = 0.5f;
       private const float TrailOffsetZ = - 1f;
+
       
 
-      private Coroutine _coroutine;   
+      private Coroutine _trailCoroutine;   
       private InputPrincipal _inputPrincipal;
       private Vector2 _startPosition;
       private Vector2 _endPosition;
@@ -51,9 +52,9 @@ namespace InputSwipe
       {
          _startPosition = position;
          _startTime = time;
+         trail.transform.position = new Vector3(position.x, position.y + trailOffsetY, TrailOffsetZ);
          trail.SetActive(true);
-         trail.transform.position = position;
-         _coroutine = StartCoroutine(Trail());
+         _trailCoroutine = StartCoroutine(Trail());
       }
 
       private IEnumerator Trail()
@@ -69,7 +70,7 @@ namespace InputSwipe
       private void SwipeEnd(Vector2 position, float time)
       {
          trail.SetActive(false);
-         StopCoroutine(_coroutine);
+         StopCoroutine(_trailCoroutine);
          _endPosition = position;
          _endTime = time;
          DetectSwipe();

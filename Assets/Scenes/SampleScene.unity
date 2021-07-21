@@ -628,7 +628,6 @@ MonoBehaviour:
   torusSectors: {fileID: 102349072}
   pool: {fileID: 1293825868}
   swipeDetection: {fileID: 1129597128}
-  menu: {fileID: 1404601526}
   game: {fileID: 1687258583}
 --- !u!114 &102349072
 MonoBehaviour:
@@ -1010,7 +1009,7 @@ MonoBehaviour:
     m_PressedTrigger: Pressed
     m_SelectedTrigger: Selected
     m_DisabledTrigger: Disabled
-  m_Interactable: 1
+  m_Interactable: 0
   m_TargetGraphic: {fileID: 470374951}
   m_OnClick:
     m_PersistentCalls:
@@ -1018,6 +1017,18 @@ MonoBehaviour:
       - m_Target: {fileID: 1404601526}
         m_TargetAssemblyTypeName: InputSwipe.Pause.PauseMenu, Assembly-CSharp
         m_MethodName: Pause
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 1129597129}
+        m_TargetAssemblyTypeName: InputSwipe.InputPrincipal, Assembly-CSharp
+        m_MethodName: EndControl
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -1479,9 +1490,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1404601526}
-        m_TargetAssemblyTypeName: InputSwipe.Pause.PauseMenu, Assembly-CSharp
-        m_MethodName: Back
+      - m_Target: {fileID: 1687258583}
+        m_TargetAssemblyTypeName: Game, Assembly-CSharp
+        m_MethodName: GameOver
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -1860,6 +1871,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a725bfa6fe02d034f860c84f294c2dd9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  game: {fileID: 1687258583}
 --- !u!4 &1129597130
 Transform:
   m_ObjectHideFlags: 0
@@ -2240,6 +2252,7 @@ MonoBehaviour:
   pausePanel: {fileID: 2042183065}
   gameOverPanel: {fileID: 8506007}
   game: {fileID: 1687258583}
+  pauseButton: {fileID: 470374948}
 --- !u!1 &1447064141
 GameObject:
   m_ObjectHideFlags: 0
@@ -2405,6 +2418,18 @@ MonoBehaviour:
       - m_Target: {fileID: 1404601526}
         m_TargetAssemblyTypeName: InputSwipe.Pause.PauseMenu, Assembly-CSharp
         m_MethodName: Resume
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 1129597129}
+        m_TargetAssemblyTypeName: InputSwipe.InputPrincipal, Assembly-CSharp
+        m_MethodName: StartControl
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -2792,9 +2817,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ac59922778322284a95f5aafd975930b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  buttonPanel: {fileID: 1982135851}
+  mainPanel: {fileID: 1982135851}
   gameOverPanel: {fileID: 8506007}
-  pillar: {fileID: 102349071}
   background: {fileID: 1680819715}
   pool: {fileID: 1293825868}
 --- !u!20 &1687258584
@@ -3675,11 +3699,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c8b6284bd3a84934f99e79af2befae55, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  menu: {fileID: 1404601526}
+  game: {fileID: 1687258583}
   pool: {fileID: 1293825868}
   mainPanel: {fileID: 1982135851}
   blow: {fileID: 1932661041}
-  time: 2
+  time: 1
 --- !u!1 &1967643721
 GameObject:
   m_ObjectHideFlags: 0

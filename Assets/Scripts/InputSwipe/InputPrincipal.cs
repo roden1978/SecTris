@@ -7,8 +7,10 @@ namespace InputSwipe
     [DefaultExecutionOrder(-1)]
     public class InputPrincipal : Singleton<InputPrincipal>
     {
+        [SerializeField] private Game game;
         private SectorControls _sectorControls;
         private Camera _mainCamera;
+        private bool _isControl;
 
         public event Action<Vector2, float> OnStartTouch;
         public event Action<Vector2, float> OnEndTouch;
@@ -21,11 +23,15 @@ namespace InputSwipe
         private void OnEnable()
         {
             _sectorControls.Enable();
+            game.OnGameStart += StartControl;
+            game.OnStopGame += EndControl;
         }
 
         private void OnDisable() 
         {
             _sectorControls.Disable();
+            game.OnGameStart -= StartControl;
+            game.OnStopGame -= EndControl;
         }
 
         private void Start()
@@ -34,18 +40,38 @@ namespace InputSwipe
             _sectorControls.Touch.PrimaryContact.canceled += ctx => EndTouchPrimary(ctx);
         }
 
+        private void StartControl()
+        {
+            _isControl = true;
+        }
+
+        private void EndControl()
+        {
+            _isControl = false;
+        }
+
         private void StartTouchPrimary(InputAction.CallbackContext context)
         {
-            OnStartTouch?.Invoke(ScreenToWorld(_mainCamera, 
-                    _sectorControls.Touch.PrimaryPosition.ReadValue<Vector2>()), 
-                (float)context.startTime);
+            if (_isControl)
+            {
+               var position = ScreenToWorld(_mainCamera,
+                               _sectorControls.Touch.PrimaryPosition.ReadValue<Vector2>());
+                OnStartTouch?.Invoke(position, (float)context.startTime); 
+            }
+                
         }
         
         private void EndTouchPrimary(InputAction.CallbackContext context)
         {
-            OnEndTouch?.Invoke(ScreenToWorld(_mainCamera, 
-                    _sectorControls.Touch.PrimaryPosition.ReadValue<Vector2>()),
-                (float)context.time);
+            
+            if (_isControl)
+            {
+               var position = ScreenToWorld(_mainCamera,
+                        _sectorControls.Touch.PrimaryPosition.ReadValue<Vector2>());
+               
+               OnEndTouch?.Invoke(position, (float)context.time);  
+            }
+                
         }
 
         public Vector2 PrimaryPosition()
