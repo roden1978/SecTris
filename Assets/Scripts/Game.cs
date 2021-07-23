@@ -16,18 +16,20 @@ public class Game : MonoBehaviour
     public event Action OnGameStart;
 
     private Coroutine _fixingSectors;
+    private Coroutine _removeNotActive;
     
     private const float StopPoint = 4.7f;
     private IMaxYPosition _maxYPosition;
     private List<GameObject> _fixed;
     private float _bucketHeight;
-
+    private Neighbor _neighbor;
     void Start()
     {
         _fixed = new List<GameObject>();
         Time.timeScale = 0;
         _maxYPosition = new MaxYPosition(_fixed);
         mainPanel.SetActive(true);
+        _neighbor = new Neighbor(_fixed);
     }
 
     private IEnumerator FixingSectors()
@@ -42,7 +44,7 @@ public class Game : MonoBehaviour
                 if (rb.isKinematic)
                     _fixed.Add(sector);
             }
-
+            //if(_fixed.Count > 0)_neighbor.Find();
             _bucketHeight = _maxYPosition.Value();
             if (_bucketHeight > StopPoint)
             {
@@ -50,7 +52,18 @@ public class Game : MonoBehaviour
             }
         }
     }
-
+    private bool NotActive(GameObject sector)
+    {
+        return !sector.activeInHierarchy;
+    }
+    private IEnumerator RemoveNotActive(float delay)
+    {
+        while (true)
+        {
+            yield return new WaitForSeconds(delay);
+            _fixed.RemoveAll(NotActive);
+        }
+    }
     
     public void StartGame()
     {
@@ -84,6 +97,7 @@ public class Game : MonoBehaviour
         OnGameOver?.Invoke();
         gameOverPanel.SetActive(false);
         StopCoroutine(_fixingSectors);
+        StopCoroutine(_removeNotActive);
         _bucketHeight = 0;
         _fixed.Clear();
     }
@@ -97,6 +111,7 @@ public class Game : MonoBehaviour
     private void GameStart()
     {
         _fixingSectors = StartCoroutine(FixingSectors());
+        _removeNotActive = StartCoroutine(RemoveNotActive(.5f));
     }
     private void ChangeBackground()
     {
