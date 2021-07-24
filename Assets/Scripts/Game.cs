@@ -18,7 +18,7 @@ public class Game : MonoBehaviour
     private Coroutine _fixingSectors;
     private Coroutine _removeNotActive;
     
-    private const float StopPoint = 4.7f;
+    private const float StopPoint = 5f;
     private IMaxYPosition _maxYPosition;
     private List<GameObject> _fixed;
     private float _bucketHeight;
@@ -44,12 +44,13 @@ public class Game : MonoBehaviour
                 if (rb.isKinematic)
                     _fixed.Add(sector);
             }
-            //if(_fixed.Count > 0)_neighbor.Find();
+            if(_fixed.Count > 0) _neighbor.Find();
             _bucketHeight = _maxYPosition.Value();
             if (_bucketHeight > StopPoint)
             {
                 OnStopGame?.Invoke();
             }
+            _fixed.Clear();
         }
     }
     private bool NotActive(GameObject sector)
