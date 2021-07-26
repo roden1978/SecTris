@@ -6,6 +6,7 @@ public class Neighbor
     private readonly List<GameObject> _list;
 
     private readonly IMaxFixedLevel _maxFixedLevel;
+    private readonly List<Sector> _findSectors;
 
     private const int SectorsInTorAmount = 5;
 
@@ -13,6 +14,7 @@ public class Neighbor
     {
         _list = list;
         _maxFixedLevel = new MaxFixedLevel(_list);
+        _findSectors = new List<Sector>();
     }
 
     public void Find()
@@ -25,7 +27,7 @@ public class Neighbor
 
    private Sector[,] FillBucket(int levelsAmount)
    {
-       var bucket = new Sector[levelsAmount, SectorsInTorAmount];;
+       var bucket = new Sector[levelsAmount, SectorsInTorAmount];
         for (var levelIndex = 0; levelIndex < levelsAmount; levelIndex++)
         {
             foreach (var item in _list)
@@ -63,11 +65,11 @@ public class Neighbor
             {
                sector.gameObject.SetActive(false);
             }
+            _findSectors.Clear();
        }
    }
    private IEnumerable<Sector> VerticalSearch(Sector[,] sectors)
    {
-       var findSectors = new List<Sector>();
        var array = new Sector[3];
        for (int i = 0; i < SectorsInTorAmount; i++)
        {
@@ -78,25 +80,56 @@ public class Neighbor
 
            var current = array[0];
            if (!current) continue;
-           findSectors.Add(current);
            
-           var sector = SearchInRow(array, current, 0);
-           if(!sector) continue; 
-           findSectors.Add(sector);
+           SearchNext(array, current, 0);
            
-           if(findSectors.Count < 3) findSectors.Clear();
-           return findSectors;
+           if(_findSectors.Count < 3) _findSectors.Clear();
        }
-       return findSectors; 
+       return _findSectors; 
+   }
+   private List<Sector> RemainingSectors(IReadOnlyList<Sector> sectors, Sector current, int i)
+
+   {
+       if(i + 1 > sectors.Count) return null;
+       var sectorsNew = new List<Sector>();
+
+       if (!sectors[i + 1]  || !current) return null;
+       if (current.GetColorIndex() == sectors[i + 1].GetColorIndex())
+           for (int j = i + 1; j < sectors.Count; j++)
+           {
+            sectorsNew.Add(sectors[j]);
+           }
+       else
+        return null;
+       
+        AddEquals(current);
+
+       return sectorsNew;
+
    }
 
-   private Sector SearchInRow(Sector[] sectors, Sector current, int i)
+   private void SearchNext(Sector[] array, Sector current, int i)
    {
-       if(i + 1 > 2) return null;
-       if (!current  || !sectors[i + 1]) return null;
-       if (current.GetColorIndex() != sectors[i + 1].GetColorIndex()) return null;
-       SearchInRow(sectors, sectors[i + 1], i + 1);
-       return sectors[i + 1];
+       while (true)
+       {
+           var nextArray = RemainingSectors(array, current, i);
+           if (nextArray == null) return;
+           if (i + 1 == nextArray.Count)
+               AddEquals(nextArray[0]);
+           else
+           {
+               array = nextArray.ToArray();
+               current = nextArray[0];
+               i = 0;
+               continue;
+           }
 
+           break;
+       }
+   }
+
+   private void AddEquals(Sector sector)
+   {
+       _findSectors.Add(sector);
    }
 }

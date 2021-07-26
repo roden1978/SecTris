@@ -22,6 +22,7 @@ public class Game : MonoBehaviour
     private IMaxYPosition _maxYPosition;
     private List<GameObject> _fixed;
     private float _bucketHeight;
+    private int _prevFixedCount;
     private Neighbor _neighbor;
     void Start()
     {
@@ -44,13 +45,19 @@ public class Game : MonoBehaviour
                 if (rb.isKinematic)
                     _fixed.Add(sector);
             }
-            if(_fixed.Count > 0) _neighbor.Find();
+
+            if (_prevFixedCount != _fixed.Count)
+            {
+                _prevFixedCount = _fixed.Count;
+                _neighbor.Find();
+            }
             _bucketHeight = _maxYPosition.Value();
             if (_bucketHeight > StopPoint)
             {
                 OnStopGame?.Invoke();
             }
             _fixed.Clear();
+            _prevFixedCount = _fixed.Count;
         }
     }
     private bool NotActive(GameObject sector)
