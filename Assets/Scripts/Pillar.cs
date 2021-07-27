@@ -9,24 +9,16 @@ public sealed class Pillar : MonoBehaviour
     [SerializeField] private Pool pool;
     [SerializeField] private SwipeDetection swipeDetection;
     [SerializeField] private Game game;
-    
-    
-    private Neighbour _neighbour;
-    
-    
+
     private bool _spawn;
     
     private List<GameObject> _moved;
-    private List<GameObject> _fixed;
     private List<GameObject> _active;
 
     private void Start()
     {
         _moved = new List<GameObject>();
-        _fixed = new List<GameObject>();
         _active = new List<GameObject>();
-        _neighbour = new Neighbour(_fixed);
-        
     }
 
     private void OnEnable()
@@ -46,22 +38,11 @@ public sealed class Pillar : MonoBehaviour
     private void GameStartSpawn()
     {
         _spawn = true;
-        StartCoroutine(SpawnSectors(.1f));
-        StartCoroutine(RemoveNotActive(.5f)); 
+        StartCoroutine(SpawnSectors(.1f)); 
     }
-    private IEnumerator RemoveNotActive(float delay)
-    {
-        while (_spawn)
-        {
-            yield return new WaitForSeconds(delay);
-            _fixed.RemoveAll(NotActive);
-        }
-    }
+   
 
-    private bool NotActive(GameObject sector)
-    {
-        return !sector.activeInHierarchy;
-    }
+   
 
     private IEnumerator SpawnSectors(float delay)
     {
@@ -73,14 +54,14 @@ public sealed class Pillar : MonoBehaviour
             foreach (var sector in _active)
             {
                 var sectorRigidbody = sector.transform.GetComponent<Rigidbody>();
-                if(!sectorRigidbody.isKinematic)
+                if(sectorRigidbody.isKinematic == false)
                     _moved.Add(sector);                
             }
             
-            _neighbour.Find();
-            
-            if(_moved.Count == 0)
+            if (_moved.Count == 0)
+            {
                 torusSectors.Assembly();
+            }
             
             _moved.Clear();
             

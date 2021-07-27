@@ -12,10 +12,6 @@ public class MaxFixedLevel : IMaxFixedLevel
     
     public int Value()
     {
-        if (_list.Count == 0)
-        {
-            return 0;
-        }
         var maxPosition = int.MinValue;
       
         foreach (var item in _list)

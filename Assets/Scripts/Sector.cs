@@ -15,6 +15,7 @@ public class Sector : MonoBehaviour
     private float _size;
     private float _drag;
     private int _colorIndex;
+    private int _level;
     private Quaternion _nextDegree;
 
     private bool _isLeft;
@@ -108,12 +109,23 @@ public class Sector : MonoBehaviour
     private void FixedUpdate()
     {
         CheckBottom();
-
+        UpdateLevel();
         if (_isRight)
             RotateSectors(RotateDegrees, Right);
 
         if (_isLeft)
             RotateSectors(RotateDegrees, Left);
+    }
+
+    private void UpdateLevel()
+    {
+        var sectorHeight = _meshRenderer.bounds.size.y;
+        _level = Mathf.RoundToInt(transform.position.y / sectorHeight);
+    }
+
+    public int GetLevel()
+    {
+        return _level;
     }
 
     private void CheckBottom()
@@ -170,6 +182,7 @@ public class Sector : MonoBehaviour
         _rigidbody.isKinematic = false;
         _rigidbody.velocity = Vector3.zero;
         _rigidbody.drag = _drag;
+        _collision = false;
     }
 
     public void SetColorIndex(int index)
