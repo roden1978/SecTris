@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UI;
 using UnityEngine;
 
@@ -10,7 +11,10 @@ public class Game : MonoBehaviour
     [SerializeField] private GameObject gameOverPanel;
     [SerializeField] private Background background;
     [SerializeField] private Pool pool;
-    
+    [SerializeField] private int sectorPrice;
+    [SerializeField] private TMP_Text scoresText;
+    [SerializeField] private TMP_Text highScoresText;
+    [SerializeField] private int highScores;
     public event Action OnGameOver;
     public event Action OnStopGame;
     public event Action OnGameStart;
@@ -21,16 +25,24 @@ public class Game : MonoBehaviour
     private const float StopPoint = 5f;
     private IMaxYPosition _maxYPosition;
     private List<GameObject> _fixed;
-    private float _bucketHeight;
-    private int _prevFixedCount;
     private Neighbor _neighbor;
-    void Start()
+    
+    private int _prevFixedCount;
+    private int _scores;
+    
+
+
+    private void Awake()
     {
         _fixed = new List<GameObject>();
-        Time.timeScale = 0;
-        _maxYPosition = new MaxYPosition(_fixed);
-        mainPanel.SetActive(true);
         _neighbor = new Neighbor(_fixed);
+        _maxYPosition = new MaxYPosition(_fixed);
+    }
+
+    void Start()
+    {
+        Time.timeScale = 0;
+        mainPanel.SetActive(true);
     }
 
     private IEnumerator FixingSectors()
@@ -51,8 +63,8 @@ public class Game : MonoBehaviour
                 _prevFixedCount = _fixed.Count;
                 _neighbor.Find();
             }
-            _bucketHeight = _maxYPosition.Value();
-            if (_bucketHeight > StopPoint)
+            BucketHeight = _maxYPosition.Value();
+            if (BucketHeight > StopPoint)
             {
                 OnStopGame?.Invoke();
             }
@@ -75,13 +87,20 @@ public class Game : MonoBehaviour
     
     public void StartGame()
     {
-        _bucketHeight = 0;
+        ScoresReset();
+        BucketHeight = 0;
         Time.timeScale = 1;
         mainPanel.SetActive(false);
         ChangeBackground();
         OnGameStart?.Invoke();
     }
 
+    private void ScoresReset()
+    {
+        _scores = 0;
+        ScoreChanged(0); 
+    }
+   
     public void Exit()
     {
         Application.Quit();
@@ -91,12 +110,15 @@ public class Game : MonoBehaviour
     {
         OnStopGame += StopGame;
         OnGameStart += GameStart;
+        _neighbor.OnScoreChanged += ScoreChanged;
+
     }
 
     private void OnDisable()
     {
         OnStopGame -= StopGame;
         OnGameStart -= GameStart;
+        _neighbor.OnScoreChanged -= ScoreChanged;
     }
 
     public void GameOver()
@@ -106,7 +128,7 @@ public class Game : MonoBehaviour
         gameOverPanel.SetActive(false);
         StopCoroutine(_fixingSectors);
         StopCoroutine(_removeNotActive);
-        _bucketHeight = 0;
+        BucketHeight = 0;
         _fixed.Clear();
     }
 
@@ -126,6 +148,20 @@ public class Game : MonoBehaviour
         background.ChangeBackground();
     }
     
-    public float BucketHeight => _bucketHeight;
+    public float BucketHeight { get; private set; }
+
+    private void ScoreChanged(int scores)
+    {
+        var newScores = _scores + sectorPrice * scores;
+        _scores = newScores;
+        scoresText.text = newScores.ToString();
+        HighScoresChange(_scores);
+    }
+
+    private void HighScoresChange(int scores)
+    {
+        if (scores > highScores) highScores = scores;
+        highScoresText.text = highScores.ToString();
+    }
 
 }

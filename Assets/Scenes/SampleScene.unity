@@ -2821,6 +2821,10 @@ MonoBehaviour:
   gameOverPanel: {fileID: 8506007}
   background: {fileID: 1680819715}
   pool: {fileID: 1293825868}
+  sectorPrice: 100
+  scoresText: {fileID: 1967643723}
+  highScoresText: {fileID: 1536752846}
+  highScores: 0
 --- !u!20 &1687258584
 Camera:
   m_ObjectHideFlags: 0
@@ -3715,8 +3719,9 @@ GameObject:
   - component: {fileID: 1967643722}
   - component: {fileID: 1967643724}
   - component: {fileID: 1967643723}
+  - component: {fileID: 1967643725}
   m_Layer: 5
-  m_Name: Amount
+  m_Name: Scores
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3838,6 +3843,19 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1967643721}
   m_CullTransparentMesh: 1
+--- !u!114 &1967643725
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1967643721}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fd33c15c62211e040a44ded26359dba1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  game: {fileID: 1687258583}
 --- !u!1 &1982135851
 GameObject:
   m_ObjectHideFlags: 0

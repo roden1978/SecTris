@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -8,7 +9,11 @@ public class Neighbor
     private readonly IMaxFixedLevel _maxFixedLevel;
     private readonly List<Sector> _findSectors;
 
-    private const int SectorsInTorAmount = 5;
+    public event Action<int> OnScoreChanged; 
+    
+    private const int Row = 3;
+    private const int Column = 5;
+    private const int MinimumSectors = 3;
 
     public Neighbor(List<GameObject> list)
     {
@@ -27,7 +32,7 @@ public class Neighbor
 
    private Sector[,] FillBucket(int levelsAmount)
    {
-       var bucket = new Sector[levelsAmount, SectorsInTorAmount];
+       var bucket = new Sector[levelsAmount, Column];
         for (var levelIndex = 0; levelIndex < levelsAmount; levelIndex++)
         {
             foreach (var item in _list)
@@ -48,32 +53,37 @@ public class Neighbor
 
    private void Search(Sector[,] bucket, int levelsAmount)
    {
-       var investigatedArray = new Sector[3,SectorsInTorAmount];
-       for (int z = levelsAmount; z >= 0; z--)
+       var investigatedArray = new Sector[Row,Column];
+       for (var z = levelsAmount; z >= 0; z--)
        {
-           if (z < 2) continue;
-           for (int i = 0; i < 3; i++)
+           if (z < Row - 1) continue;
+           for (var i = 0; i < Row; i++)
            {
-               for (int j = 0; j < SectorsInTorAmount; j++)
+               for (var j = 0; j < Column; j++)
                {
                    investigatedArray[i, j] = bucket[z - i, j];
                }
            }
 
             var rowSectors = VerticalSearch(investigatedArray);
-            foreach (var sector in rowSectors)
+            if(rowSectors.Count > 0)
             {
-               sector.gameObject.SetActive(false);
+                OnScoreChanged?.Invoke(rowSectors.Count);
+                
+                foreach (var sector in rowSectors)
+                {
+                    sector.gameObject.SetActive(false);
+                }
             }
             _findSectors.Clear();
        }
    }
-   private IEnumerable<Sector> VerticalSearch(Sector[,] sectors)
+   private List<Sector> VerticalSearch(Sector[,] sectors)
    {
-       var array = new Sector[3];
-       for (int i = 0; i < SectorsInTorAmount; i++)
+       var array = new Sector[Row];
+       for (var i = 0; i < Column; i++)
        {
-           for (int j = 0; j < 3; j++)
+           for (var j = 0; j < Row; j++)
            {
                array[j] = sectors[j, i];
            }
@@ -83,7 +93,7 @@ public class Neighbor
            
            SearchNext(array, current, 0);
            
-           if(_findSectors.Count < 3) _findSectors.Clear();
+           if(_findSectors.Count < MinimumSectors) _findSectors.Clear();
        }
        return _findSectors; 
    }
@@ -95,7 +105,7 @@ public class Neighbor
 
        if (!sectors[i + 1]  || !current) return null;
        if (current.GetColorIndex() == sectors[i + 1].GetColorIndex())
-           for (int j = i + 1; j < sectors.Count; j++)
+           for (var j = i + 1; j < sectors.Count; j++)
            {
             sectorsNew.Add(sectors[j]);
            }
