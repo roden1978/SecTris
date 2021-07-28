@@ -7,7 +7,7 @@ public class Neighbor: MonoBehaviour
     private List<Sector> _findSectors;
 
     public event Action<int> OnScoreChanged; 
-    public event Action OnBurningSectors;
+    public event Action<Sector[]> OnBurningSectors;
     
     private const int Row = 3;
     private const int Column = 5;
@@ -65,13 +65,10 @@ public class Neighbor: MonoBehaviour
             if(rowSectors.Count > 0)
             {
                 OnScoreChanged?.Invoke(rowSectors.Count);
-                
-                foreach (var sector in rowSectors)
-                {
-                    sector.gameObject.SetActive(false);
-                }
-                
-                OnBurningSectors?.Invoke();
+
+                var copy = new Sector[rowSectors.Count];
+                rowSectors.CopyTo(copy);
+                OnBurningSectors?.Invoke(copy);
             }
             _findSectors.Clear();
        }
