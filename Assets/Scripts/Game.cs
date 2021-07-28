@@ -111,6 +111,7 @@ public class Game : MonoBehaviour
         OnStopGame += StopGame;
         OnGameStart += GameStart;
         _neighbor.OnScoreChanged += ScoreChanged;
+        _neighbor.OnBurningSectors += BurningSectors;
 
     }
 
@@ -119,6 +120,7 @@ public class Game : MonoBehaviour
         OnStopGame -= StopGame;
         OnGameStart -= GameStart;
         _neighbor.OnScoreChanged -= ScoreChanged;
+        _neighbor.OnBurningSectors -= BurningSectors;
     }
 
     public void GameOver()
@@ -162,6 +164,11 @@ public class Game : MonoBehaviour
     {
         if (scores > highScores) highScores = scores;
         highScoresText.text = highScores.ToString();
+    }
+
+    private void BurningSectors()
+    {
+        
     }
 
 }

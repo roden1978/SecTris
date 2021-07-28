@@ -10,7 +10,7 @@ public class Neighbor
     private readonly List<Sector> _findSectors;
 
     public event Action<int> OnScoreChanged; 
-    
+    public event Action OnBurningSectors;
     private const int Row = 3;
     private const int Column = 5;
     private const int MinimumSectors = 3;
@@ -74,6 +74,8 @@ public class Neighbor
                 {
                     sector.gameObject.SetActive(false);
                 }
+                
+                OnBurningSectors?.Invoke();
             }
             _findSectors.Clear();
        }
