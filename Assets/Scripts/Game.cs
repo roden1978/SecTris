@@ -15,6 +15,7 @@ public class Game : MonoBehaviour
     [SerializeField] private TMP_Text scoresText;
     [SerializeField] private TMP_Text highScoresText;
     [SerializeField] private int highScores;
+    [SerializeField] private Neighbor neighbor;
     public event Action OnGameOver;
     public event Action OnStopGame;
     public event Action OnGameStart;
@@ -25,7 +26,6 @@ public class Game : MonoBehaviour
     private const float StopPoint = 5f;
     private IMaxYPosition _maxYPosition;
     private List<GameObject> _fixed;
-    private Neighbor _neighbor;
     
     private int _prevFixedCount;
     private int _scores;
@@ -35,7 +35,6 @@ public class Game : MonoBehaviour
     private void Awake()
     {
         _fixed = new List<GameObject>();
-        _neighbor = new Neighbor(_fixed);
         _maxYPosition = new MaxYPosition(_fixed);
     }
 
@@ -45,31 +44,32 @@ public class Game : MonoBehaviour
         mainPanel.SetActive(true);
     }
 
-    private IEnumerator FixingSectors()
+    private IEnumerator FixingSectors(float delay)
     {
         while(true)
         {
-            yield return new WaitForSeconds(.1f);
+            yield return new WaitForSeconds(delay);
             var active = pool.GetAllActive();
             foreach (var sector in active)
             {
-                var rb = sector.transform.GetComponent<Rigidbody>();
-                if (rb.isKinematic)
+                var sectorRigidbody = sector.transform.GetComponent<Rigidbody>();
+                if (sectorRigidbody.isKinematic)
                     _fixed.Add(sector);
             }
 
             if (_prevFixedCount != _fixed.Count)
             {
+                
                 _prevFixedCount = _fixed.Count;
-                _neighbor.Find();
+                neighbor.Find(_fixed);
             }
             BucketHeight = _maxYPosition.Value();
             if (BucketHeight > StopPoint)
             {
                 OnStopGame?.Invoke();
             }
-            _fixed.Clear();
             _prevFixedCount = _fixed.Count;
+            _fixed.Clear();
         }
     }
     private bool NotActive(GameObject sector)
@@ -110,8 +110,8 @@ public class Game : MonoBehaviour
     {
         OnStopGame += StopGame;
         OnGameStart += GameStart;
-        _neighbor.OnScoreChanged += ScoreChanged;
-        _neighbor.OnBurningSectors += BurningSectors;
+        neighbor.OnScoreChanged += ScoreChanged;
+        neighbor.OnBurningSectors += BurningSectors;
 
     }
 
@@ -119,8 +119,8 @@ public class Game : MonoBehaviour
     {
         OnStopGame -= StopGame;
         OnGameStart -= GameStart;
-        _neighbor.OnScoreChanged -= ScoreChanged;
-        _neighbor.OnBurningSectors -= BurningSectors;
+        neighbor.OnScoreChanged -= ScoreChanged;
+        neighbor.OnBurningSectors -= BurningSectors;
     }
 
     public void GameOver()
@@ -142,7 +142,7 @@ public class Game : MonoBehaviour
 
     private void GameStart()
     {
-        _fixingSectors = StartCoroutine(FixingSectors());
+        _fixingSectors = StartCoroutine(FixingSectors(.1f));
         _removeNotActive = StartCoroutine(RemoveNotActive(.5f));
     }
     private void ChangeBackground()

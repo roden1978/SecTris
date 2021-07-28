@@ -10,10 +10,10 @@ public sealed class Pillar : MonoBehaviour
     [SerializeField] private SwipeDetection swipeDetection;
     [SerializeField] private Game game;
 
-    private bool _spawn;
-    
     private List<GameObject> _moved;
     private List<GameObject> _active;
+
+    private Coroutine _spawn;
 
     private void Start()
     {
@@ -23,30 +23,23 @@ public sealed class Pillar : MonoBehaviour
 
     private void OnEnable()
     {
-        swipeDetection.OnSwipeDown += Fall;
         game.OnGameOver += StopGame;
         game.OnGameStart += GameStartSpawn;
     }
 
     private void OnDisable()
     {
-        swipeDetection.OnSwipeDown -= Fall;
         game.OnGameOver -= StopGame;
         game.OnGameStart -= GameStartSpawn;
     }
 
     private void GameStartSpawn()
     {
-        _spawn = true;
-        StartCoroutine(SpawnSectors(.1f)); 
+        _spawn = StartCoroutine(SpawnSectors(.1f)); 
     }
-   
-
-   
-
     private IEnumerator SpawnSectors(float delay)
     {
-        while (_spawn)
+        while (true)
         {
             yield return new WaitForSeconds(delay);
 
@@ -66,24 +59,11 @@ public sealed class Pillar : MonoBehaviour
             _moved.Clear();
             
         }
-        _moved.Clear();
-    }
-
-    private void Fall()
-    {
-        var fallingSectors = pool.GetAllActive();
-        
-        foreach (var sector in fallingSectors)
-        {
-            var sectorRigidbody = sector.transform.GetComponent<Rigidbody>();
-            if(!sectorRigidbody.isKinematic)
-                sectorRigidbody.drag = 0;               
-        }
-      
+        //_moved.Clear();
     }
 
     private void StopGame()
     {
-        _spawn = false;
+        StopCoroutine(_spawn);
     }
 }

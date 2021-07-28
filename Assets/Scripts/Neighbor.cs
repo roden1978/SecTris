@@ -2,40 +2,36 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Neighbor
+public class Neighbor: MonoBehaviour
 {
-    private readonly List<GameObject> _list;
-
-    private readonly IMaxFixedLevel _maxFixedLevel;
-    private readonly List<Sector> _findSectors;
+    private List<Sector> _findSectors;
 
     public event Action<int> OnScoreChanged; 
     public event Action OnBurningSectors;
+    
     private const int Row = 3;
     private const int Column = 5;
     private const int MinimumSectors = 3;
 
-    public Neighbor(List<GameObject> list)
+  private void Awake()
     {
-        _list = list;
-        _maxFixedLevel = new MaxFixedLevel(_list);
         _findSectors = new List<Sector>();
     }
 
-    public void Find()
+    public void Find(List<GameObject> sectors)
     {
-        var value = _maxFixedLevel.Value();
+        var value = new MaxFixedLevel(sectors).Value();
         var levelAmount = value + 1;
-        var bucket = FillBucket(levelAmount);
+        var bucket = FillBucket(levelAmount, sectors);
         Search(bucket, value);
     }
 
-   private Sector[,] FillBucket(int levelsAmount)
+   private Sector[,] FillBucket(int levelsAmount, List<GameObject> sectors)
    {
        var bucket = new Sector[levelsAmount, Column];
         for (var levelIndex = 0; levelIndex < levelsAmount; levelIndex++)
         {
-            foreach (var item in _list)
+            foreach (var item in sectors)
             {
                 var sector = item.GetComponent<Sector>();
                 var level = sector.GetLevel();
