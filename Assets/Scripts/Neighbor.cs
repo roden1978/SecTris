@@ -5,6 +5,7 @@ using UnityEngine;
 public class Neighbor: MonoBehaviour
 {
     private List<Sector> _findSectors;
+    private List<Sector> _allFindSectors;
 
     public event Action<int> OnScoreChanged; 
     public event Action<Sector[]> OnBurningSectors;
@@ -16,6 +17,7 @@ public class Neighbor: MonoBehaviour
   private void Awake()
     {
         _findSectors = new List<Sector>();
+        _allFindSectors = new List<Sector>();
     }
 
     public void Find(List<GameObject> sectors)
@@ -62,15 +64,14 @@ public class Neighbor: MonoBehaviour
            }
 
             var rowSectors = VerticalSearch(investigatedArray);
-            if(rowSectors.Count > 0)
+            if(rowSectors.Count != 0)
             {
                 OnScoreChanged?.Invoke(rowSectors.Count);
-
                 var copy = new Sector[rowSectors.Count];
                 rowSectors.CopyTo(copy);
                 OnBurningSectors?.Invoke(copy);
             }
-            _findSectors.Clear();
+            _allFindSectors.Clear();
        }
    }
    private List<Sector> VerticalSearch(Sector[,] sectors)
@@ -88,9 +89,18 @@ public class Neighbor: MonoBehaviour
            
            SearchNext(array, current, 0);
            
-           if(_findSectors.Count < MinimumSectors) _findSectors.Clear();
+           if(_findSectors.Count < MinimumSectors)
+           {
+               _findSectors.Clear();
+               continue;
+           }
+           foreach (var sector in _findSectors)
+           {
+               _allFindSectors.Add(sector);
+           }
+           _findSectors.Clear();
        }
-       return _findSectors; 
+       return _allFindSectors; 
    }
    private List<Sector> RemainingSectors(IReadOnlyList<Sector> sectors, Sector current, int i)
 
@@ -135,6 +145,6 @@ public class Neighbor: MonoBehaviour
 
    private void AddEquals(Sector sector)
    {
-       _findSectors.Add(sector);
+        _findSectors.Add(sector);
    }
 }

@@ -19,7 +19,7 @@ public class Game : MonoBehaviour
     private Coroutine _fixingSectors;
     private Coroutine _removeNotActive;
     
-    private const float StopPoint = 5f;
+    private const float StopPoint = 4.7f;
     private IMaxYPosition _maxYPosition;
     private List<GameObject> _fixed;
     
@@ -122,7 +122,7 @@ public class Game : MonoBehaviour
 
     private void GameStart()
     {
-        _fixingSectors = StartCoroutine(FixingSectors(.3f));
+        _fixingSectors = StartCoroutine(FixingSectors(.1f));
         _removeNotActive = StartCoroutine(RemoveNotActive(.5f));
     }
     private void ChangeBackground()

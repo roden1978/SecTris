@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -6,6 +7,8 @@ public class SectorsSwitch : MonoBehaviour
 {
    [SerializeField] private Neighbor _neighbor;
    private int _count;
+
+   public event Action<Sector> OnDeactivateSector;
    private void OnEnable()
    {
       _neighbor.OnBurningSectors += SwitchSectors;
@@ -26,9 +29,10 @@ public class SectorsSwitch : MonoBehaviour
    {
       while (_count < sectors.Count)
       {
-         yield return new WaitForSeconds(.05f);
          sectors[_count].gameObject.SetActive(false);
+         OnDeactivateSector?.Invoke(sectors[_count]);
          _count++;
+         yield return new WaitForSeconds(0.05f);
       }
    }
 }

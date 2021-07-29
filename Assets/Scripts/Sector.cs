@@ -4,15 +4,15 @@ using UnityEngine;
 
 public class Sector : MonoBehaviour
 {
-   [SerializeField, Range(0f, 100)] private float rotateSpeed = 100;
+   [SerializeField, Range(0f, 100)] private float _rotateSpeed = 100;
     private SwipeDetection _swipeDetection;
     private Game _game;
     private MeshRenderer _meshRenderer;
     private Rigidbody _rigidbody;
     
     private float _drag;
+    private float _sectorHeight;
     private int _colorIndex;
-    private int _level;
     private Quaternion _nextDegree;
 
     private bool _isLeft;
@@ -32,11 +32,12 @@ public class Sector : MonoBehaviour
         _swipeDetection = FindObjectOfType<SwipeDetection>();
         _rigidbody = GetComponent<Rigidbody>();
         _drag = _rigidbody.drag;
+        _sectorHeight = _meshRenderer.bounds.size.y;
     }
 
     private void RotateSectors(float degrees, int direction)
     {
-        var minPoint = _game.BucketHeight;
+        var minPoint = _game.BucketHeight + _sectorHeight;
         if (!_rigidbody.isKinematic && 
             transform.position.y > minPoint &&
             transform.rotation != _nextDegree)
@@ -44,7 +45,7 @@ public class Sector : MonoBehaviour
             var originalRot = transform.rotation;    
             transform.rotation = Quaternion.Slerp(originalRot, 
                 originalRot * Quaternion.AngleAxis(degrees * direction, Vector3.up),
-                Time.deltaTime * rotateSpeed);
+                Time.deltaTime * _rotateSpeed);
         }
     }
    
@@ -81,7 +82,6 @@ public class Sector : MonoBehaviour
     private void FixedUpdate()
     {
         CheckBottom();
-        UpdateLevel();
         if (_isRight)
             RotateSectors(RotateDegrees, Right);
 
@@ -89,23 +89,16 @@ public class Sector : MonoBehaviour
             RotateSectors(RotateDegrees, Left);
     }
 
-    private void UpdateLevel()
+   public int GetLevel()
     {
-        var sectorHeight = _meshRenderer.bounds.size.y;
-        _level = Mathf.RoundToInt(transform.position.y / sectorHeight);
-    }
-
-    public int GetLevel()
-    {
-        return _level;
+        return Mathf.RoundToInt(transform.position.y / _sectorHeight);
     }
 
     private void CheckBottom()
     {
         var bounds = _meshRenderer.bounds;
         var center = bounds.center;
-        var maxDistance = bounds.size.y;
-        var result = Physics.Raycast(center, Vector3.down, maxDistance,
+        var result = Physics.Raycast(center, Vector3.down, _sectorHeight,
             LayerMaskSector | LayerMaskPlatform);
         if (result == false)
             _rigidbody.isKinematic = false;
