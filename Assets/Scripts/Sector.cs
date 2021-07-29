@@ -56,12 +56,10 @@ public class Sector : MonoBehaviour
             if (_rigidbody.isKinematic) return;
             var contactPoint = other.GetContact(0);
             var center = _meshRenderer.bounds.center;
-            
-            if (contactPoint.point.y < center.y)
-            {
-                _rigidbody.isKinematic = true;
-                _rigidbody.drag = _drag;
-            }
+
+            if (!(contactPoint.point.y < center.y)) return;
+            _rigidbody.isKinematic = true;
+            _rigidbody.drag = _drag;
         }
     }
 

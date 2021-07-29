@@ -48,17 +48,19 @@ public class Game : MonoBehaviour
                 if (sectorRigidbody.isKinematic)
                     _fixed.Add(sector);
             }
-
-            if (_prevFixedCount != _fixed.Count)
-            {
-                _prevFixedCount = _fixed.Count;
-                _neighbor.Find(_fixed);
-            }
+            
             BucketHeight = _maxYPosition.Value();
             if (BucketHeight > StopPoint)
             {
                 OnStopGame?.Invoke();
             }
+            
+            if (_prevFixedCount != _fixed.Count)
+            {
+                _prevFixedCount = _fixed.Count;
+                _neighbor.Find(_fixed);
+            }
+            
             _prevFixedCount = _fixed.Count;
             _fixed.Clear();
         }
