@@ -16,18 +16,22 @@ public class Game : MonoBehaviour
     public event Action OnStopGame;
     public event Action OnGameStart;
 
+    public event Action<float> OnChangeBucketHeight;
+
     private Coroutine _fixingSectors;
     private Coroutine _removeNotActive;
     
-    private const float StopPoint = 4.7f;
-    private IMaxYPosition _maxYPosition;
+    private const float StopPoint = 5f;
+    private IBucketHeight _bucketHeight;
     private List<GameObject> _fixed;
     
     private int _prevFixedCount;
+    private float _prevBucketHeight;
+    private float _currentBucketHeight;
     private void Awake()
     {
         _fixed = new List<GameObject>();
-        _maxYPosition = new MaxYPosition(_fixed);
+        _bucketHeight = new BucketHeight(_fixed);
     }
 
     private void Start()
@@ -36,7 +40,7 @@ public class Game : MonoBehaviour
         _mainPanel.SetActive(true);
     }
 
-    private IEnumerator FixingSectors(float delay)
+   private IEnumerator FixingSectors(float delay)
     {
         while(true)
         {
@@ -49,9 +53,16 @@ public class Game : MonoBehaviour
                     _fixed.Add(sector);
             }
             
-            BucketHeight = _maxYPosition.Value();
-            if (BucketHeight > StopPoint)
+            _currentBucketHeight = _bucketHeight.Value();
+            if (Math.Abs(_prevBucketHeight - _currentBucketHeight) > 0)
             {
+                _prevBucketHeight = _currentBucketHeight;
+                Debug.Log(_currentBucketHeight);
+                OnChangeBucketHeight?.Invoke(_currentBucketHeight);
+            }
+            if (_currentBucketHeight > StopPoint)
+            {
+                OnChangeBucketHeight?.Invoke(0f);
                 OnStopGame?.Invoke();
             }
             
@@ -80,7 +91,7 @@ public class Game : MonoBehaviour
     
     public void StartGame()
     {
-        BucketHeight = 0;
+        _currentBucketHeight = 0;
         Time.timeScale = 1;
         _mainPanel.SetActive(false);
         ChangeBackground();
@@ -111,7 +122,7 @@ public class Game : MonoBehaviour
         _gameOverPanel.SetActive(false);
         StopCoroutine(_fixingSectors);
         StopCoroutine(_removeNotActive);
-        BucketHeight = 0;
+        _currentBucketHeight = 0;
         _prevFixedCount = 0;
         _fixed.Clear();
     }
@@ -131,7 +142,5 @@ public class Game : MonoBehaviour
     {
         _background.ChangeBackground();
     }
-    
-    public float BucketHeight { get; private set; }
     
 }

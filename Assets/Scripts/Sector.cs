@@ -13,15 +13,15 @@ public class Sector : MonoBehaviour
     private float _drag;
     private float _sectorHeight;
     private int _colorIndex;
-    private Quaternion _nextDegree;
+    /*private Quaternion _nextDegree;
 
     private bool _isLeft;
-    private bool _isRight;
+    private bool _isRight;*/
     private bool _collision = true;
 
-    private const int Left = 1;
-    private const int Right = -1;
-    private const float RotateDegrees = 72;
+    /*private const int Left = 1;
+    private const int Right = -1;*/
+    /*private const float RotateDegrees = 72;*/
     private const int LayerMaskSector = 1 << 9;
     private const int LayerMaskPlatform = 1 << 8;
 
@@ -35,7 +35,7 @@ public class Sector : MonoBehaviour
         _sectorHeight = _meshRenderer.bounds.size.y;
     }
 
-    private void RotateSectors(float degrees, int direction)
+    /*private void RotateSectors(float degrees, int direction)
     {
         var minPoint = _game.BucketHeight + _sectorHeight;
         if (!_rigidbody.isKinematic && 
@@ -47,7 +47,7 @@ public class Sector : MonoBehaviour
                 originalRot * Quaternion.AngleAxis(degrees * direction, Vector3.up),
                 Time.deltaTime * _rotateSpeed);
         }
-    }
+    }*/
    
    private void OnCollisionEnter(Collision other)
     {
@@ -63,7 +63,7 @@ public class Sector : MonoBehaviour
         }
     }
 
-    private IEnumerator SwitchLeft(float delay)
+    /*private IEnumerator SwitchLeft(float delay)
     {
         _isLeft = true;
         yield return new WaitForSeconds(delay);
@@ -75,16 +75,16 @@ public class Sector : MonoBehaviour
         _isRight = true;
         yield return new WaitForSeconds(delay);
         _isRight = false;
-    }
+    }*/
 
     private void FixedUpdate()
     {
         CheckBottom();
-        if (_isRight)
+        /*if (_isRight)
             RotateSectors(RotateDegrees, Right);
 
         if (_isLeft)
-            RotateSectors(RotateDegrees, Left);
+            RotateSectors(RotateDegrees, Left);*/
     }
 
    public int GetLevel()
@@ -104,8 +104,8 @@ public class Sector : MonoBehaviour
 
     private void OnEnable()
     {
-        _swipeDetection.OnSwipeRight += RotateRight;
-        _swipeDetection.OnSwipeLeft += RotateLeft;
+        /*_swipeDetection.OnSwipeRight += RotateRight;
+        _swipeDetection.OnSwipeLeft += RotateLeft;*/
         _swipeDetection.OnSwipeDown += Fall;
         _game.OnGameOver += OffCollision;
         _collision = true;
@@ -114,8 +114,8 @@ public class Sector : MonoBehaviour
     private void OnDisable()
     {
         ResetSector();
-        _swipeDetection.OnSwipeRight -= RotateRight;
-        _swipeDetection.OnSwipeLeft -= RotateLeft;
+        /*_swipeDetection.OnSwipeRight -= RotateRight;
+        _swipeDetection.OnSwipeLeft -= RotateLeft;*/
         _swipeDetection.OnSwipeDown -= Fall;
         _game.OnGameOver -= OffCollision;
     }
@@ -125,7 +125,7 @@ public class Sector : MonoBehaviour
         _collision = false;
     }
     
-   private void RotateLeft()
+   /*private void RotateLeft()
     {
         var originalRot = transform.rotation;
         _nextDegree = originalRot * Quaternion.AngleAxis(RotateDegrees * Left, Vector3.up);
@@ -137,7 +137,7 @@ public class Sector : MonoBehaviour
         var originalRot = transform.rotation;
         _nextDegree = originalRot * Quaternion.AngleAxis(RotateDegrees * Right, Vector3.up);
         StartCoroutine(SwitchRight(0.5f));
-    }
+    }*/
 
 
     private void Fall()
