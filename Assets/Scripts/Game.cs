@@ -30,7 +30,7 @@ public class Game : MonoBehaviour
         _maxYPosition = new MaxYPosition(_fixed);
     }
 
-    void Start()
+    private void Start()
     {
         Time.timeScale = 0;
         _mainPanel.SetActive(true);
