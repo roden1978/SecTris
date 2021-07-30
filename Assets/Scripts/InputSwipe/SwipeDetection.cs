@@ -7,16 +7,16 @@ namespace InputSwipe
    public class SwipeDetection : MonoBehaviour
    {
       [SerializeField] 
-      private float minimumDistance = .2f;
+      private float _minimumDistance = .2f;
 
       [SerializeField]
-      private float maxTime = 1f;
+      private float _maxTime = 1f;
 
       [SerializeField, Range(0f, 1f)] 
-      private float directionThreshold = .9f;
+      private float _directionThreshold = .9f;
 
-      [SerializeField] private GameObject trail;
-      [SerializeField, Range(0f, 1f)] private float trailOffsetY = 0.5f;
+      [SerializeField] private GameObject _trail;
+      [SerializeField, Range(0f, 1f)] private float _trailOffsetY = 0.5f;
       private const float TrailOffsetZ = - 1f;
 
       
@@ -52,8 +52,8 @@ namespace InputSwipe
       {
          _startPosition = position;
          _startTime = time;
-         trail.transform.position = new Vector3(position.x, position.y + trailOffsetY, TrailOffsetZ);
-         trail.SetActive(true);
+         _trail.transform.position = new Vector3(position.x, position.y + _trailOffsetY, TrailOffsetZ);
+         _trail.SetActive(true);
          _trailCoroutine = StartCoroutine(Trail());
       }
 
@@ -62,14 +62,14 @@ namespace InputSwipe
          while (true)
          {
             var trailPosition = new Vector3(_inputPrincipal.PrimaryPosition().x, 
-               _inputPrincipal.PrimaryPosition().y + trailOffsetY, TrailOffsetZ);
-            trail.transform.position = trailPosition;
+               _inputPrincipal.PrimaryPosition().y + _trailOffsetY, TrailOffsetZ);
+            _trail.transform.position = trailPosition;
             yield return null;
          }
       }
       private void SwipeEnd(Vector2 position, float time)
       {
-         trail.SetActive(false);
+         _trail.SetActive(false);
          StopCoroutine(_trailCoroutine);
          _endPosition = position;
          _endTime = time;
@@ -78,8 +78,8 @@ namespace InputSwipe
 
       private void DetectSwipe()
       {
-         if (Vector3.Distance(_startPosition, _endPosition) >= minimumDistance &&
-             (_endTime - _startTime) <= maxTime)
+         if (Vector3.Distance(_startPosition, _endPosition) >= _minimumDistance &&
+             (_endTime - _startTime) <= _maxTime)
          {
             var direction = _endPosition - _startPosition;
             var direction2D = new Vector2(direction.x, direction.y).normalized;
@@ -89,11 +89,11 @@ namespace InputSwipe
 
       private void SwipeDirection(Vector2 direction)
       {
-        if(Vector2.Dot(Vector2.left, direction) > directionThreshold)
+        if(Vector2.Dot(Vector2.left, direction) > _directionThreshold)
             OnSwipeLeft?.Invoke();
-        else if(Vector2.Dot(Vector2.right, direction) > directionThreshold)
+        else if(Vector2.Dot(Vector2.right, direction) > _directionThreshold)
             OnSwipeRight?.Invoke();
-        else if(Vector2.Dot(Vector2.down, direction) > directionThreshold)
+        else if(Vector2.Dot(Vector2.down, direction) > _directionThreshold)
             OnSwipeDown?.Invoke();
       }
    }

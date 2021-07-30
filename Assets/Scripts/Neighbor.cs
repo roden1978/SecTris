@@ -2,40 +2,38 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Neighbor
+public class Neighbor: MonoBehaviour
 {
-    private readonly List<GameObject> _list;
-
-    private readonly IMaxFixedLevel _maxFixedLevel;
-    private readonly List<Sector> _findSectors;
+    private List<Sector> _findSectors;
+    private List<Sector> _allFindSectors;
 
     public event Action<int> OnScoreChanged; 
-    public event Action OnBurningSectors;
+    public event Action<Sector[]> OnBurningSectors;
+    
     private const int Row = 3;
     private const int Column = 5;
     private const int MinimumSectors = 3;
 
-    public Neighbor(List<GameObject> list)
+  private void Awake()
     {
-        _list = list;
-        _maxFixedLevel = new MaxFixedLevel(_list);
         _findSectors = new List<Sector>();
+        _allFindSectors = new List<Sector>();
     }
 
-    public void Find()
+    public void Find(List<GameObject> sectors)
     {
-        var value = _maxFixedLevel.Value();
+        var value = new MaxFixedLevel(sectors).Value();
         var levelAmount = value + 1;
-        var bucket = FillBucket(levelAmount);
+        var bucket = FillBucket(levelAmount, sectors);
         Search(bucket, value);
     }
 
-   private Sector[,] FillBucket(int levelsAmount)
+   private Sector[,] FillBucket(int levelsAmount, List<GameObject> sectors)
    {
        var bucket = new Sector[levelsAmount, Column];
         for (var levelIndex = 0; levelIndex < levelsAmount; levelIndex++)
         {
-            foreach (var item in _list)
+            foreach (var item in sectors)
             {
                 var sector = item.GetComponent<Sector>();
                 var level = sector.GetLevel();
@@ -66,18 +64,14 @@ public class Neighbor
            }
 
             var rowSectors = VerticalSearch(investigatedArray);
-            if(rowSectors.Count > 0)
+            if(rowSectors.Count != 0)
             {
                 OnScoreChanged?.Invoke(rowSectors.Count);
-                
-                foreach (var sector in rowSectors)
-                {
-                    sector.gameObject.SetActive(false);
-                }
-                
-                OnBurningSectors?.Invoke();
+                var copy = new Sector[rowSectors.Count];
+                rowSectors.CopyTo(copy);
+                OnBurningSectors?.Invoke(copy);
             }
-            _findSectors.Clear();
+            _allFindSectors.Clear();
        }
    }
    private List<Sector> VerticalSearch(Sector[,] sectors)
@@ -95,9 +89,18 @@ public class Neighbor
            
            SearchNext(array, current, 0);
            
-           if(_findSectors.Count < MinimumSectors) _findSectors.Clear();
+           if(_findSectors.Count < MinimumSectors)
+           {
+               _findSectors.Clear();
+               continue;
+           }
+           foreach (var sector in _findSectors)
+           {
+               _allFindSectors.Add(sector);
+           }
+           _findSectors.Clear();
        }
-       return _findSectors; 
+       return _allFindSectors; 
    }
    private List<Sector> RemainingSectors(IReadOnlyList<Sector> sectors, Sector current, int i)
 
@@ -142,6 +145,6 @@ public class Neighbor
 
    private void AddEquals(Sector sector)
    {
-       _findSectors.Add(sector);
+        _findSectors.Add(sector);
    }
 }

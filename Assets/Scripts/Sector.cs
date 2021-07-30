@@ -4,18 +4,15 @@ using UnityEngine;
 
 public class Sector : MonoBehaviour
 {
-   [SerializeField, Range(0f, 100)] private float rotateSpeed = 100;
+   [SerializeField, Range(0f, 100)] private float _rotateSpeed = 100;
     private SwipeDetection _swipeDetection;
     private Game _game;
     private MeshRenderer _meshRenderer;
     private Rigidbody _rigidbody;
-    private RaycastHit _hitLeft;
-    private RaycastHit[] _hitDown;
     
-    private float _size;
     private float _drag;
+    private float _sectorHeight;
     private int _colorIndex;
-    private int _level;
     private Quaternion _nextDegree;
 
     private bool _isLeft;
@@ -24,9 +21,7 @@ public class Sector : MonoBehaviour
 
     private const int Left = 1;
     private const int Right = -1;
-    private const float Angel = -36;
     private const float RotateDegrees = 72;
-    private const float HitLeftDistance = 1f;
     private const int LayerMaskSector = 1 << 9;
     private const int LayerMaskPlatform = 1 << 8;
 
@@ -35,47 +30,25 @@ public class Sector : MonoBehaviour
         _meshRenderer = GetComponent<MeshRenderer>();
         _game = FindObjectOfType<Game>();
         _swipeDetection = FindObjectOfType<SwipeDetection>();
-        _size = _meshRenderer.bounds.size.y;
         _rigidbody = GetComponent<Rigidbody>();
-        _hitDown = new RaycastHit[2];
         _drag = _rigidbody.drag;
+        _sectorHeight = _meshRenderer.bounds.size.y;
     }
 
     private void RotateSectors(float degrees, int direction)
     {
-        
-        var minPoint = _game.BucketHeight;
-        if (!_rigidbody.isKinematic && transform.position.y > minPoint && transform.rotation != _nextDegree)
+        var minPoint = _game.BucketHeight + _sectorHeight;
+        if (!_rigidbody.isKinematic && 
+            transform.position.y > minPoint &&
+            transform.rotation != _nextDegree)
         {
             var originalRot = transform.rotation;    
             transform.rotation = Quaternion.Slerp(originalRot, 
                 originalRot * Quaternion.AngleAxis(degrees * direction, Vector3.up),
-                Time.deltaTime * rotateSpeed);
+                Time.deltaTime * _rotateSpeed);
         }
     }
-
-    public bool CastLeft()
-    {
-        var center = _meshRenderer.bounds.center;
-        var position = transform.position;
-        var originPoint = new Vector3(position.x, center.y, position.z);
-        var directionOrigin = originPoint - center;
-        var direction = Quaternion.AngleAxis(Angel, Vector3.up) * directionOrigin;
-
-        var result = Physics.Raycast(center, direction, out _hitLeft, HitLeftDistance, LayerMaskSector);
-        return result;
-    }
-
-    public int CastDown()
-    {
-        var center = _meshRenderer.bounds.center;
-        var hitDownDistance = _size * 2f;
-        var size = Physics.RaycastNonAlloc(center, Vector3.down, _hitDown, hitDownDistance, LayerMaskSector);
-        Debug.DrawRay(center, Vector3.down, Color.red);
-        Debug.Log($"Size {size}");
-        return size;
-    }
-
+   
    private void OnCollisionEnter(Collision other)
     {
         if(_collision)
@@ -83,12 +56,10 @@ public class Sector : MonoBehaviour
             if (_rigidbody.isKinematic) return;
             var contactPoint = other.GetContact(0);
             var center = _meshRenderer.bounds.center;
-            
-            if (contactPoint.point.y < center.y)
-            {
-                _rigidbody.isKinematic = true;
-                _rigidbody.drag = _drag;
-            }
+
+            if (!(contactPoint.point.y < center.y)) return;
+            _rigidbody.isKinematic = true;
+            _rigidbody.drag = _drag;
         }
     }
 
@@ -109,7 +80,6 @@ public class Sector : MonoBehaviour
     private void FixedUpdate()
     {
         CheckBottom();
-        UpdateLevel();
         if (_isRight)
             RotateSectors(RotateDegrees, Right);
 
@@ -117,23 +87,16 @@ public class Sector : MonoBehaviour
             RotateSectors(RotateDegrees, Left);
     }
 
-    private void UpdateLevel()
+   public int GetLevel()
     {
-        var sectorHeight = _meshRenderer.bounds.size.y;
-        _level = Mathf.RoundToInt(transform.position.y / sectorHeight);
-    }
-
-    public int GetLevel()
-    {
-        return _level;
+        return Mathf.RoundToInt(transform.position.y / _sectorHeight);
     }
 
     private void CheckBottom()
     {
         var bounds = _meshRenderer.bounds;
         var center = bounds.center;
-        var maxDistance = bounds.size.y;
-        var result = Physics.Raycast(center, Vector3.down, maxDistance,
+        var result = Physics.Raycast(center, Vector3.down, _sectorHeight,
             LayerMaskSector | LayerMaskPlatform);
         if (result == false)
             _rigidbody.isKinematic = false;
@@ -143,6 +106,7 @@ public class Sector : MonoBehaviour
     {
         _swipeDetection.OnSwipeRight += RotateRight;
         _swipeDetection.OnSwipeLeft += RotateLeft;
+        _swipeDetection.OnSwipeDown += Fall;
         _game.OnGameOver += OffCollision;
         _collision = true;
     }
@@ -152,6 +116,7 @@ public class Sector : MonoBehaviour
         ResetSector();
         _swipeDetection.OnSwipeRight -= RotateRight;
         _swipeDetection.OnSwipeLeft -= RotateLeft;
+        _swipeDetection.OnSwipeDown -= Fall;
         _game.OnGameOver -= OffCollision;
     }
 
@@ -174,7 +139,12 @@ public class Sector : MonoBehaviour
         StartCoroutine(SwitchRight(0.5f));
     }
 
-    
+
+    private void Fall()
+    {
+        if(!_rigidbody.isKinematic)
+            _rigidbody.drag = 0;               
+    }
 
     private void ResetSector()
     {
@@ -190,11 +160,5 @@ public class Sector : MonoBehaviour
         _colorIndex = index;
     }
     public int GetColorIndex() => _colorIndex;
-    public RaycastHit GetHitLeft() => _hitLeft;
-    public RaycastHit[] GetHitDown()
-    {
-        return _hitDown;
-    }
-    
-    
+   
 }
