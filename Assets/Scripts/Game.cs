@@ -57,7 +57,6 @@ public class Game : MonoBehaviour
             if (Math.Abs(_prevBucketHeight - _currentBucketHeight) > 0)
             {
                 _prevBucketHeight = _currentBucketHeight;
-                Debug.Log(_currentBucketHeight);
                 OnChangeBucketHeight?.Invoke(_currentBucketHeight);
             }
             if (_currentBucketHeight > StopPoint)
