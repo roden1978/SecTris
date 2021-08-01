@@ -1,19 +1,22 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
-using InputSwipe;
 using UnityEngine;
 
 public sealed class Pillar : MonoBehaviour
 {
     [SerializeField] private TorusSectors torusSectors;
     [SerializeField] private Pool pool;
-    [SerializeField] private SwipeDetection swipeDetection;
     [SerializeField] private Game game;
+
+    public event Action<List<GameObject>> OnNewAssembly; 
 
     private List<GameObject> _moved;
     private List<GameObject> _active;
 
     private Coroutine _spawn;
+
+    private float _bucketHeight;
 
     private void Start()
     {
@@ -25,12 +28,14 @@ public sealed class Pillar : MonoBehaviour
     {
         game.OnGameOver += StopGame;
         game.OnGameStart += GameStartSpawn;
+        game.OnChangeBucketHeight += ChangeBucketHeight;
     }
 
     private void OnDisable()
     {
         game.OnGameOver -= StopGame;
         game.OnGameStart -= GameStartSpawn;
+        game.OnChangeBucketHeight -= ChangeBucketHeight;
     }
 
     private void GameStartSpawn()
@@ -41,29 +46,36 @@ public sealed class Pillar : MonoBehaviour
     {
         while (true)
         {
-            yield return new WaitForSeconds(delay);
-
             _active = pool.GetAllActive();
+
             foreach (var sector in _active)
             {
-                var sectorRigidbody = sector.transform.GetComponent<Rigidbody>();
-                if(sectorRigidbody.isKinematic == false)
+                //var sectorRigidbody = sector.transform.GetComponent<Rigidbody>();
+                var positionY = sector.transform.position.y;
+                if(positionY > _bucketHeight) //sectorRigidbody.isKinematic == false && 
                     _moved.Add(sector);                
             }
-            
+
             if (_moved.Count == 0)
             {
-                torusSectors.Assembly();
+                var sectors = torusSectors.Assembly();
+                OnNewAssembly?.Invoke(sectors);
             }
-            
+
             _moved.Clear();
-            
+
+            yield return new WaitForSeconds(delay);
         }
-        //_moved.Clear();
     }
 
     private void StopGame()
     {
         StopCoroutine(_spawn);
     }
+
+    private void ChangeBucketHeight(float height)
+    {
+        _bucketHeight = height;
+    }
 }
+
