@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 2138677392}
-  m_IndirectSpecularColor: {r: 0.13893826, g: 0.3252997, b: 0.38563827, a: 1}
+  m_IndirectSpecularColor: {r: 0.14198716, g: 0.32076347, b: 0.36831263, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -941,7 +941,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 122040307}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1404601526}
+        m_TargetAssemblyTypeName: InputSwipe.Pause.Menu, Assembly-CSharp
+        m_MethodName: SettingsPanelOff
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &122040307
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1349,9 +1361,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: Game, Assembly-CSharp
-        m_MethodName: Exit
+      - m_Target: {fileID: 1404601526}
+        m_TargetAssemblyTypeName: InputSwipe.Pause.Menu, Assembly-CSharp
+        m_MethodName: SettingsPanelOn
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -4093,6 +4105,7 @@ MonoBehaviour:
   _game: {fileID: 1774703381}
   _bucket: {fileID: 531729531}
   _pauseButton: {fileID: 470374948}
+  _settingsPanel: {fileID: 2130084022}
 --- !u!1 &1447064141
 GameObject:
   m_ObjectHideFlags: 0
@@ -6557,14 +6570,14 @@ Light:
   m_Lightmapping: 2
   m_LightShadowCasterMode: 0
   m_AreaSize: {x: 1, y: 1}
-  m_BounceIntensity: 1
+  m_BounceIntensity: 0
   m_ColorTemperature: 6570
   m_UseColorTemperature: 0
   m_BoundingSphereOverride: {x: 7.86e-43, y: 0.0000000050577675, z: 4.5905e-41, w: 0}
   m_UseBoundingSphereOverride: 0
   m_UseViewFrustumForShadowCasterCull: 1
   m_ShadowRadius: 0
-  m_ShadowAngle: 0
+  m_ShadowAngle: 14.4
 --- !u!4 &2138677393
 Transform:
   m_ObjectHideFlags: 0
@@ -6572,10 +6585,10 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2138677391}
-  m_LocalRotation: {x: 0.585912, y: 0.46151006, z: 0.12716478, w: 0.6538691}
-  m_LocalPosition: {x: -1010, y: -2027, z: 7892}
+  m_LocalRotation: {x: 0.21767327, y: 0.4101267, z: -0.101465695, w: 0.87984043}
+  m_LocalPosition: {x: -13.21, y: 8.67, z: -8.57}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 2
-  m_LocalEulerAnglesHint: {x: 40.455, y: 98.507, z: 68.322}
+  m_LocalEulerAnglesHint: {x: 27.792, y: 49.984, z: 0}

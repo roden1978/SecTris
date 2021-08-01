@@ -10,6 +10,7 @@ namespace InputSwipe.Pause
         [SerializeField] private Game _game;
         [SerializeField] private Bucket _bucket;
         [SerializeField] private GameObject _pauseButton;
+        [SerializeField] private GameObject _settingsPanel;
         private PauseActions _action;
         private bool _isPaused;
         private Button _button;
@@ -80,6 +81,15 @@ namespace InputSwipe.Pause
         {
             _button.interactable = false;
         }
-      
+
+        public void SettingsPanelOn()
+        {
+            _settingsPanel.SetActive(true);
+        }
+        public void SettingsPanelOff()
+        {
+            _settingsPanel.SetActive(false);
+        }
+
     }
 }
