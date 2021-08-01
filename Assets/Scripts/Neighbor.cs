@@ -20,7 +20,7 @@ public class Neighbor: MonoBehaviour
         _allFindSectors = new List<Sector>();
     }
 
-    public void Find(List<GameObject> sectors)
+    public void FindNeighborSectors(List<GameObject> sectors)
     {
         var value = new MaxFixedLevel(sectors).Value();
         var levelAmount = value + 1;

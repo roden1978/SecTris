@@ -1,0 +1,115 @@
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class Bucket : MonoBehaviour
+{
+    [SerializeField] private Pool _pool;
+   
+    [SerializeField] private Neighbor _neighbor;
+    [SerializeField] private Game _game;
+    
+    private const float StopPoint = 5f;
+    private IBucketHeight _bucketHeight;
+    private List<GameObject> _bucket;
+    
+    public event Action OnOverflowBucket;
+
+    public event Action<float> OnChangeBucketHeight;
+    
+    private Coroutine _updateBucket;
+    private Coroutine _removeNotActive;
+    
+    private int _prevFixedCount;
+    private float _prevBucketHeight;
+    private float _currentBucketHeight;
+    private void Awake()
+    {
+        _bucket = new List<GameObject>();
+        _bucketHeight = new BucketHeight(_bucket);
+    }
+
+    private void OnEnable()
+    {
+        _game.OnGameStart += StartUpdateBucket;
+        _game.OnGameOver += StopUpdateBucket;
+    }
+
+    private void OnDisable()
+    {
+        _game.OnGameStart -= StartUpdateBucket;
+        _game.OnGameOver -= StopUpdateBucket;
+    }
+    private void StartUpdateBucket()
+    {
+        _currentBucketHeight = 0;
+        _updateBucket = StartCoroutine(UpdateBucket(.1f));
+        _removeNotActive = StartCoroutine(RemoveNotActive(.5f));
+    }
+
+    private void StopUpdateBucket()
+    {
+        StopCoroutine(_updateBucket);
+        StopCoroutine(_removeNotActive);
+        _currentBucketHeight = 0;
+        _prevFixedCount = 0;
+        _bucket.Clear();
+    }
+    private IEnumerator UpdateBucket(float delay)
+    {
+        while(true)
+        {
+            yield return new WaitForSeconds(delay);
+
+            FillBucket();
+
+            _currentBucketHeight = _bucketHeight.Value();
+            
+            if (Math.Abs(_prevBucketHeight - _currentBucketHeight) > 0)
+            {
+                _prevBucketHeight = _currentBucketHeight;
+                OnChangeBucketHeight?.Invoke(_currentBucketHeight);
+            }
+            
+            if (_currentBucketHeight > StopPoint)
+            {
+                OnChangeBucketHeight?.Invoke(0f);
+                OnOverflowBucket?.Invoke();
+            }
+            
+            if (_prevFixedCount != _bucket.Count)
+            {
+                _prevFixedCount = _bucket.Count;
+                _neighbor.FindNeighborSectors(_bucket);
+            }
+            
+            _prevFixedCount = _bucket.Count;
+            _bucket.Clear();
+        }
+    }
+
+    private void FillBucket()
+    {
+        var active = _pool.GetAllActive();
+        foreach (var sector in active)
+        {
+            var sectorRigidbody = sector.transform.GetComponent<Rigidbody>();
+            if (sectorRigidbody.isKinematic)
+                _bucket.Add(sector);
+        }
+    }
+
+    private bool NotActive(GameObject sector)
+    {
+        return !sector.activeInHierarchy;
+    }
+    private IEnumerator RemoveNotActive(float delay)
+    {
+        while (true)
+        {
+            yield return new WaitForSeconds(delay);
+            _bucket.RemoveAll(NotActive);
+        }
+    }
+}

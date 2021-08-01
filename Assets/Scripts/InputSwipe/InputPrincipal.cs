@@ -7,7 +7,8 @@ namespace InputSwipe
     [DefaultExecutionOrder(-1)]
     public class InputPrincipal : Singleton<InputPrincipal>
     {
-        [SerializeField] private Game game;
+        [SerializeField] private Game _game;
+        [SerializeField] private Bucket _bucket;
         private SectorControls _sectorControls;
         private Camera _mainCamera;
         private bool _isControl;
@@ -23,15 +24,15 @@ namespace InputSwipe
         private void OnEnable()
         {
             _sectorControls.Enable();
-            game.OnGameStart += StartControl;
-            game.OnStopGame += EndControl;
+            _game.OnGameStart += StartControl;
+            _bucket.OnOverflowBucket += EndControl;
         }
 
         private void OnDisable() 
         {
             _sectorControls.Disable();
-            game.OnGameStart -= StartControl;
-            game.OnStopGame -= EndControl;
+            _game.OnGameStart -= StartControl;
+            _bucket.OnOverflowBucket -= EndControl;
         }
 
         private void Start()

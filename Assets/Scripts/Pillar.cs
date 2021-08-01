@@ -5,9 +5,10 @@ using UnityEngine;
 
 public sealed class Pillar : MonoBehaviour
 {
-    [SerializeField] private TorusSectors torusSectors;
-    [SerializeField] private Pool pool;
-    [SerializeField] private Game game;
+    [SerializeField] private TorusSectors _torusSectors;
+    [SerializeField] private Pool _pool;
+    [SerializeField] private Game _game;
+    [SerializeField] private Bucket _bucket;
 
     public event Action<List<GameObject>> OnNewAssembly; 
 
@@ -26,16 +27,16 @@ public sealed class Pillar : MonoBehaviour
 
     private void OnEnable()
     {
-        game.OnGameOver += StopGame;
-        game.OnGameStart += GameStartSpawn;
-        game.OnChangeBucketHeight += ChangeBucketHeight;
+        _game.OnGameOver += StopGame;
+        _game.OnGameStart += GameStartSpawn;
+        _bucket.OnChangeBucketHeight += ChangeBucketHeight;
     }
 
     private void OnDisable()
     {
-        game.OnGameOver -= StopGame;
-        game.OnGameStart -= GameStartSpawn;
-        game.OnChangeBucketHeight -= ChangeBucketHeight;
+        _game.OnGameOver -= StopGame;
+        _game.OnGameStart -= GameStartSpawn;
+        _bucket.OnChangeBucketHeight -= ChangeBucketHeight;
     }
 
     private void GameStartSpawn()
@@ -46,19 +47,18 @@ public sealed class Pillar : MonoBehaviour
     {
         while (true)
         {
-            _active = pool.GetAllActive();
+            _active = _pool.GetAllActive();
 
             foreach (var sector in _active)
             {
-                //var sectorRigidbody = sector.transform.GetComponent<Rigidbody>();
                 var positionY = sector.transform.position.y;
-                if(positionY > _bucketHeight) //sectorRigidbody.isKinematic == false && 
+                if(positionY > _bucketHeight)  
                     _moved.Add(sector);                
             }
 
             if (_moved.Count == 0)
             {
-                var sectors = torusSectors.Assembly();
+                var sectors = _torusSectors.Assembly();
                 OnNewAssembly?.Invoke(sectors);
             }
 

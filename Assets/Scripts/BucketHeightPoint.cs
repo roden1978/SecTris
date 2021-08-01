@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class BucketHeightPoint : MonoBehaviour
 {
-    [SerializeField] private Game _game;
+    [SerializeField] private Bucket _bucket;
     private float _height;
     void Update()
     {
@@ -11,12 +11,12 @@ public class BucketHeightPoint : MonoBehaviour
 
     private void OnEnable()
     {
-        _game.OnChangeBucketHeight += ChangeHeight;
+        _bucket.OnChangeBucketHeight += ChangeHeight;
     }
 
     private void OnDisable()
     {
-        _game.OnChangeBucketHeight -= ChangeHeight;
+        _bucket.OnChangeBucketHeight -= ChangeHeight;
     }
 
     private void ChangeHeight(float height)
