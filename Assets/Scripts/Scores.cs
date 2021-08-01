@@ -7,6 +7,7 @@ public class Scores : MonoBehaviour
 {
     [SerializeField] private Neighbor _neighbor;
     [SerializeField] private Game _game;
+    [SerializeField] private Bucket _bucket;
     [SerializeField] private int _sectorPrice;
     [SerializeField] private TMP_Text _scoresText;
     [SerializeField] private TMP_Text _highScoresText;
@@ -34,7 +35,7 @@ public class Scores : MonoBehaviour
         _neighbor.OnScoreChanged += ScoreChanged;
         _game.OnGameStart += ScoresReset;
         _game.OnGameStart += StartChecking;
-        _game.OnStopGame += StopChecking;
+        _bucket.OnOverflowBucket += StopChecking;
     }
 
     private void OnDisable()
@@ -42,14 +43,12 @@ public class Scores : MonoBehaviour
         _neighbor.OnScoreChanged -= ScoreChanged;
         _game.OnGameStart -= ScoresReset;
         _game.OnGameStart -= StartChecking;
-        _game.OnStopGame -= StopChecking;
+        _bucket.OnOverflowBucket -= StopChecking;
     }
     
     private void ScoreChanged(int scores)
     {
         _tmpScores += _sectorPrice * scores;
-        //var newScores = _scores + _sectorPrice * scores;
-        //StartCoroutine(IncrementScores());
     }
 
     private void HighScoresChange(int scores)

@@ -2,17 +2,17 @@ using UnityEngine;
 
 public class GameOverSound : MonoBehaviour
 {
-   [SerializeField] private Game _game;
+   [SerializeField] private Bucket _bucket;
    [SerializeField] private AudioSource _audioSource;
 
    private void OnEnable()
    {
-      _game.OnStopGame += Play;
+      _bucket.OnOverflowBucket += Play;
    }
 
    private void OnDisable()
    {
-      _game.OnStopGame -= Play;
+      _bucket.OnOverflowBucket -= Play;
    }
 
    private void Play()

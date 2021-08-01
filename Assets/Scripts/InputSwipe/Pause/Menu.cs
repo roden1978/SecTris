@@ -5,10 +5,11 @@ namespace InputSwipe.Pause
 {
     public class Menu : MonoBehaviour
     {
-        [SerializeField] private GameObject pausePanel;
-        [SerializeField] private GameObject gameOverPanel;
-        [SerializeField] private Game game;
-        [SerializeField] private GameObject pauseButton;
+        [SerializeField] private GameObject _pausePanel;
+        [SerializeField] private GameObject _gameOverPanel;
+        [SerializeField] private Game _game;
+        [SerializeField] private Bucket _bucket;
+        [SerializeField] private GameObject _pauseButton;
         private PauseActions _action;
         private bool _isPaused;
         private Button _button;
@@ -21,7 +22,7 @@ namespace InputSwipe.Pause
         private void Start()
         {
             _action.PauseGame.Pause.performed += _ => DeterminePause();
-            _button = pauseButton.GetComponent<Button>();
+            _button = _pauseButton.GetComponent<Button>();
         }
 
         private void DeterminePause()
@@ -39,35 +40,35 @@ namespace InputSwipe.Pause
         private void OnEnable()
         {
             _action.Enable();
-            game.OnGameStart += PauseButtonOn;
-            game.OnStopGame += PauseButtonOff;
+            _game.OnGameStart += PauseButtonOn;
+            _bucket.OnOverflowBucket += PauseButtonOff;
         }
 
         private void OnDisable()
         {
             _action.Disable();
-            game.OnGameStart -= PauseButtonOn;
-            game.OnStopGame -= PauseButtonOff;
+            _game.OnGameStart -= PauseButtonOn;
+            _bucket.OnOverflowBucket -= PauseButtonOff;
         }
 
         public void Pause()
         {
-            pausePanel.SetActive(true);
+            _pausePanel.SetActive(true);
             Time.timeScale = 0f;
             _isPaused = true;
         }
 
         public void Resume()
         {
-            pausePanel.SetActive(false);
+            _pausePanel.SetActive(false);
             Time.timeScale = 1f;
             _isPaused = false;
         }
 
         public void PauseBack()
         {
-            pausePanel.SetActive(false);
-            gameOverPanel.SetActive(true);
+            _pausePanel.SetActive(false);
+            _gameOverPanel.SetActive(true);
         }
 
         private void PauseButtonOn()

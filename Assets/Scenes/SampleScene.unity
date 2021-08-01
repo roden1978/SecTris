@@ -674,6 +674,7 @@ Transform:
   - {fileID: 1341016539}
   - {fileID: 1932661040}
   - {fileID: 1848186569}
+  - {fileID: 531729532}
   m_Father: {fileID: 0}
   m_RootOrder: 8
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -705,9 +706,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 04d12baa2a5fbb94cb2ee877c6d8a812, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  torusSectors: {fileID: 102349072}
-  pool: {fileID: 1293825868}
-  game: {fileID: 1774703381}
+  _torusSectors: {fileID: 102349072}
+  _pool: {fileID: 1293825868}
+  _game: {fileID: 1774703381}
+  _bucket: {fileID: 531729531}
 --- !u!114 &102349072
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1899,6 +1901,52 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 12
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &531729530
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 531729532}
+  - component: {fileID: 531729531}
+  m_Layer: 6
+  m_Name: Bucket
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &531729531
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 531729530}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 319226afcc0b2e74ba9ef724af64e6ee, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _pool: {fileID: 1293825868}
+  _neighbor: {fileID: 1775139489}
+  _game: {fileID: 1774703381}
+--- !u!4 &531729532
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 531729530}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 102349069}
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &545412364
 GameObject:
@@ -3259,7 +3307,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a725bfa6fe02d034f860c84f294c2dd9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  game: {fileID: 1774703381}
+  _game: {fileID: 1774703381}
+  _bucket: {fileID: 531729531}
 --- !u!4 &1129597130
 Transform:
   m_ObjectHideFlags: 0
@@ -3807,7 +3856,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8cfcfcd075595f149a41590c3a947d9a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _game: {fileID: 1774703381}
+  _bucket: {fileID: 0}
 --- !u!135 &1342566032
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -4039,10 +4088,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 33339e3c24593f941857ca2643615a02, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  pausePanel: {fileID: 2042183065}
-  gameOverPanel: {fileID: 8506007}
-  game: {fileID: 1774703381}
-  pauseButton: {fileID: 470374948}
+  _pausePanel: {fileID: 2042183065}
+  _gameOverPanel: {fileID: 8506007}
+  _game: {fileID: 1774703381}
+  _bucket: {fileID: 531729531}
+  _pauseButton: {fileID: 470374948}
 --- !u!1 &1447064141
 GameObject:
   m_ObjectHideFlags: 0
@@ -4391,6 +4441,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _neighbor: {fileID: 1775139489}
   _game: {fileID: 1774703381}
+  _bucket: {fileID: 531729531}
   _sectorPrice: 100
   _scoresText: {fileID: 1967643723}
   _highScoresText: {fileID: 1536752846}
@@ -4979,8 +5030,7 @@ MonoBehaviour:
   _mainPanel: {fileID: 1982135851}
   _gameOverPanel: {fileID: 8506007}
   _background: {fileID: 1680819715}
-  _pool: {fileID: 1293825868}
-  _neighbor: {fileID: 1775139489}
+  _bucket: {fileID: 531729531}
 --- !u!4 &1774703382
 Transform:
   m_ObjectHideFlags: 0
@@ -5010,7 +5060,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 51f0f519da6d632459a720b570dec503, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _game: {fileID: 1774703381}
+  _bucket: {fileID: 531729531}
   _audioSource: {fileID: 1774703384}
 --- !u!82 &1774703384
 AudioSource:
