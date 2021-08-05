@@ -1,6 +1,7 @@
 using System;
 using UI;
 using UnityEngine;
+using UnityEngine.Audio;
 
 public class Game : MonoBehaviour
 {
@@ -8,12 +9,44 @@ public class Game : MonoBehaviour
     [SerializeField] private GameObject _gameOverPanel;
     [SerializeField] private Background _background;
     [SerializeField] private Bucket _bucket;
-   
+    [SerializeField] private Scores _scores;
+    [SerializeField] private Settings _settings;
+    [SerializeField] private AudioMixerGroup _mixer;
+    [SerializeField] private AudioSource _backgroundMusic;
+
+    private IStorage _storage;
+
+    private GameData _gameData;
+    private SettingsData _settingsData;
+
+    private const string SettingsFileName = "settings.dat";
+    private const string GameDataFileName = "gamedata.dat";
     public event Action OnGameOver;
     public event Action OnGameStart;
+    public event Action<SettingsData> OnNewSettingsData; 
+    public event Action<GameData> OnNewGameData;
+    
+    private const string Master = "MasterVolume"; 
+    private const string Music = "MusicVolume";
+    
+    private const float MaxValue = 0;
+    private const float MinValue = -80;
+
+    private void Awake()
+    {
+        _gameData = new GameData();
+        _settingsData = new SettingsData();
+        _storage = new Storage();
+    }
 
     private void Start()
     {
+        _settingsData = (SettingsData) LoadSettingsData(_settingsData);
+        UpdateMixerSettings(_settingsData);
+
+        _gameData = (GameData) LoadGameData(_gameData);
+        OnNewGameData?.Invoke(_gameData);
+
         Time.timeScale = 0;
         _mainPanel.SetActive(true);
     }
@@ -33,11 +66,18 @@ public class Game : MonoBehaviour
    private void OnEnable()
     {
         _bucket.OnOverflowBucket += StopGame;
+        _scores.OnHighScoreChange += SaveGameData;
+        _settings.OnSettingsDataChange += SaveSettingsData;
+        _settings.OnSettingsPanelOpen += UpdateSettingsData;
     }
 
     private void OnDisable()
     {
         _bucket.OnOverflowBucket -= StopGame;
+        _scores.OnHighScoreChange -= SaveGameData;
+        _settings.OnSettingsDataChange -= SaveSettingsData;
+        _settings.OnSettingsPanelOpen -= UpdateSettingsData;
+
     }
 
     public void GameOver()
@@ -57,5 +97,36 @@ public class Game : MonoBehaviour
     {
         _background.ChangeBackground();
     }
-    
+
+    private void SaveGameData(GameData gameData)
+    {
+        _storage.Save(gameData, GameDataFileName);
+    }
+
+    private void SaveSettingsData(SettingsData settingsData)
+    {
+        _storage.Save(settingsData, SettingsFileName);
+    }
+
+    private object LoadGameData(object data)
+    {
+        return (GameData) _storage.Load(data, GameDataFileName);
+    }
+
+    private object LoadSettingsData(object data)
+    {
+        return (SettingsData) _storage.Load(data, SettingsFileName);
+    }
+
+    private void UpdateSettingsData()
+    {
+        OnNewSettingsData?.Invoke(_settingsData);        
+    }
+
+    private void UpdateMixerSettings(SettingsData settingsData)
+    {
+        _mixer.audioMixer.SetFloat(Music, settingsData._mute);
+        _mixer.audioMixer.SetFloat(Master, Mathf.Lerp(MinValue, MaxValue, settingsData._volume));
+        _backgroundMusic.Play();
+    }
 }

@@ -19,6 +19,8 @@ public class Scores : MonoBehaviour
     private bool _increment;
 
     private Coroutine _coroutine;
+    private GameData _gameData;
+    public event Action<GameData> OnHighScoreChange; 
 
     private void StartChecking()
     {
@@ -35,6 +37,7 @@ public class Scores : MonoBehaviour
         _neighbor.OnScoreChanged += ScoreChanged;
         _game.OnGameStart += ScoresReset;
         _game.OnGameStart += StartChecking;
+        _game.OnNewGameData += GameDataChange;
         _bucket.OnOverflowBucket += StopChecking;
     }
 
@@ -43,6 +46,7 @@ public class Scores : MonoBehaviour
         _neighbor.OnScoreChanged -= ScoreChanged;
         _game.OnGameStart -= ScoresReset;
         _game.OnGameStart -= StartChecking;
+        _game.OnNewGameData -= GameDataChange;
         _bucket.OnOverflowBucket -= StopChecking;
     }
     
@@ -51,10 +55,24 @@ public class Scores : MonoBehaviour
         _tmpScores += _sectorPrice * scores;
     }
 
+    private void GameDataChange(GameData data)
+    {
+        _gameData = data;
+        _highScores = _gameData._highScores;
+        UpdateUIHighScores(_highScores);
+    }
+
+    private void UpdateUIHighScores(int highScores)
+    {
+        _highScoresText.text = highScores.ToString();
+    }
+
     private void HighScoresChange(int scores)
     {
         if (scores > _highScores) _highScores = scores;
-        _highScoresText.text = _highScores.ToString();
+        UpdateUIHighScores(_highScores); 
+        _gameData._highScores = _highScores;
+        OnHighScoreChange?.Invoke(_gameData);
     }
     
     private void ScoresReset()
