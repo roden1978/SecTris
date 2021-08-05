@@ -52,7 +52,8 @@ public sealed class Pillar : MonoBehaviour
             foreach (var sector in _active)
             {
                 var positionY = sector.transform.position.y;
-                if(positionY > _bucketHeight)  
+                var sectorsRigidbody = sector.GetComponent<Rigidbody>();
+                if(positionY > _bucketHeight && sectorsRigidbody.isKinematic == false)  
                     _moved.Add(sector);                
             }
 
