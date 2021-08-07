@@ -53,26 +53,21 @@ namespace InputSwipe
 
         private void StartTouchPrimary(InputAction.CallbackContext context)
         {
-            if (_isControl)
-            {
-               var position = ScreenToWorld(_mainCamera,
-                               _sectorControls.Touch.PrimaryPosition.ReadValue<Vector2>());
-                OnStartTouch?.Invoke(position, (float)context.startTime); 
-            }
-                
+            if (!_isControl) return;
+            var position = ScreenToWorld(_mainCamera,
+                _sectorControls.Touch.PrimaryPosition.ReadValue<Vector2>());
+            OnStartTouch?.Invoke(position, (float)context.startTime);
+
         }
         
         private void EndTouchPrimary(InputAction.CallbackContext context)
         {
-            
-            if (_isControl)
-            {
-               var position = ScreenToWorld(_mainCamera,
-                        _sectorControls.Touch.PrimaryPosition.ReadValue<Vector2>());
+            if (!_isControl) return;
+            var position = ScreenToWorld(_mainCamera,
+                _sectorControls.Touch.PrimaryPosition.ReadValue<Vector2>());
                
-               OnEndTouch?.Invoke(position, (float)context.time);  
-            }
-                
+            OnEndTouch?.Invoke(position, (float)context.time);
+
         }
 
         public Vector2 PrimaryPosition()
