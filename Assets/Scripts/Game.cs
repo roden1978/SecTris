@@ -1,7 +1,6 @@
 using System;
 using UI;
 using UnityEngine;
-using UnityEngine.Audio;
 
 public class Game : MonoBehaviour
 {
@@ -11,7 +10,6 @@ public class Game : MonoBehaviour
     [SerializeField] private Bucket _bucket;
     [SerializeField] private Scores _scores;
     [SerializeField] private Settings _settings;
-    [SerializeField] private AudioMixerGroup _mixer;
     [SerializeField] private AudioSource _backgroundMusic;
 
     private IStorage _storage;
@@ -25,12 +23,6 @@ public class Game : MonoBehaviour
     public event Action OnGameStart;
     public event Action<SettingsData> OnNewSettingsData; 
     public event Action<GameData> OnNewGameData;
-    
-    private const string Master = "MasterVolume"; 
-    private const string Music = "MusicVolume";
-    
-    private const float MaxValue = 0;
-    private const float MinValue = -80;
 
     private void Awake()
     {
@@ -125,8 +117,14 @@ public class Game : MonoBehaviour
 
     private void UpdateMixerSettings(SettingsData settingsData)
     {
-        _mixer.audioMixer.SetFloat(Music, settingsData._mute);
-        _mixer.audioMixer.SetFloat(Master, Mathf.Lerp(MinValue, MaxValue, settingsData._volume));
+        var mute = settingsData._mute != 0;
+        _settings.Mute(mute);
+        _settings.ChangeVolume(settingsData._volume);
+        StartBackgroundMusic();
+    }
+
+    private void StartBackgroundMusic()
+    {
         _backgroundMusic.Play();
     }
 }

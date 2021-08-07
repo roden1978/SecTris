@@ -37,17 +37,18 @@ namespace UI
         public void Mute(bool enable)
         {
             _mixer.audioMixer.SetFloat(Music, enable ? MinValue : MaxValue);
-            _settingsData._mute = enable ? (int) MinValue : (int) MaxValue;
         }
 
         public void ChangeVolume(float value)
         {
             _mixer.audioMixer.SetFloat(Master, Mathf.Lerp(MinValue, MaxValue, value));
-            _settingsData._volume = value;
+            
         }
 
         public void Save()
         {
+            _settingsData._mute = _mute.isOn ? 1 : 0;
+            _settingsData._volume = _volume.value;
             OnSettingsDataChange?.Invoke(_settingsData);
         }
 
