@@ -4,25 +4,26 @@ using UnityEngine;
 
 public class Engineer: MonoBehaviour
 {
-    [SerializeField] private Game game;
-    [SerializeField] private Pool pool;
-    [SerializeField] private GameObject mainPanel;
-    [SerializeField] private Blow blow;
-    [SerializeField] private float time;
+    [SerializeField] private Game _game;
+    [SerializeField] private Pool _pool;
+    [SerializeField] private GameObject _mainPanel;
+    [SerializeField] private Blow _blow;
+    [SerializeField] private AudioSource _explosionEffect;
+    [SerializeField] private float _time;
 
     private void OnEnable()
     {
-        game.OnGameOver += Detonate;
+        _game.OnGameOver += Detonate;
     }
 
     private void OnDisable()
     {
-        game.OnGameOver -= Detonate;
+        _game.OnGameOver -= Detonate;
     }
 
     private void PrepareSectors()
     {
-        var sectors = pool.GetAllActive();
+        var sectors = _pool.GetAllActive();
         foreach (var sector in sectors)
         {
             var sectorRigidbody = sector.GetComponent<Rigidbody>();
@@ -34,7 +35,7 @@ public class Engineer: MonoBehaviour
 
     private void DeactivateSectors()
     {
-        var sectors = pool.GetAllActive();
+        var sectors = _pool.GetAllActive();
         foreach (var sector in sectors
             .Where(sector => sector.activeInHierarchy))
         {
@@ -44,7 +45,7 @@ public class Engineer: MonoBehaviour
 
     private void RestoreSectorsConstraints()
     {
-        var sectors = pool.GetAllActive();
+        var sectors = _pool.GetAllActive();
         foreach (var sector in sectors)
         {
             var sectorRigidbody = sector.GetComponent<Rigidbody>();
@@ -57,9 +58,10 @@ public class Engineer: MonoBehaviour
 
     private void Detonate()
     {
-        StartCoroutine(ActivateMainPanel(time));
+        StartCoroutine(ActivateMainPanel(_time));
         PrepareSectors();
-        blow.ExplodeSectors();
+        _explosionEffect.Play();
+        _blow.ExplodeSectors();
     }
     
     private IEnumerator ActivateMainPanel(float delay)
@@ -68,7 +70,7 @@ public class Engineer: MonoBehaviour
         RestoreSectorsConstraints();
         DeactivateSectors();
         Time.timeScale = 0;
-        mainPanel.SetActive(true);
+        _mainPanel.SetActive(true);
     }
     
 }
