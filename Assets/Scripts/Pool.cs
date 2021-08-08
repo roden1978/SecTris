@@ -3,8 +3,8 @@ using UnityEngine;
 
 public class Pool : MonoBehaviour 
 {
-    [SerializeField] private GameObject prefab;
-    [SerializeField] private int capacity;
+    [SerializeField] private GameObject _prefab;
+    [SerializeField] private int _capacity;
         
     private List<GameObject> _pool;
     private List<GameObject> _activeObjects;
@@ -19,10 +19,10 @@ public class Pool : MonoBehaviour
 
     private void Initialize()
     {
-        for (int i = 0; i < capacity; i++)
+        for (int i = 0; i < _capacity; i++)
         {
-            var pooledObject = Instantiate(prefab, transform); 
-            pooledObject.name = "Sector(" + _index + ")";
+            var pooledObject = Instantiate(_prefab, transform); 
+            pooledObject.name = _prefab.name + "(" + _index + ")";
             pooledObject.SetActive(false);
             _pool.Add(pooledObject);
             _index++;
@@ -40,8 +40,8 @@ public class Pool : MonoBehaviour
             }               
         }
             
-        var pooledObject = Instantiate(prefab, transform);
-        pooledObject.name = "Sector(" + _index + ")";
+        var pooledObject = Instantiate(_prefab, transform);
+        pooledObject.name = _prefab.name + "(" + _index + ")";
         _index++;
         _pool.Add(pooledObject);
 

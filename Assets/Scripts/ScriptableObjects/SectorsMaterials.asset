@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 32b454ede450f6c46b8e5c6c289909fe, type: 3}
-  m_Name: MaterialsList
+  m_Name: SectorsMaterials
   m_EditorClassIdentifier: Assembly-CSharp:SO:Sectors
   _materials:
   - {fileID: 2100000, guid: 19c07bf588851f542968fedb16db4ca5, type: 2}
