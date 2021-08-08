@@ -1,4 +1,3 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -6,17 +5,17 @@ using UnityEngine;
 public class SectorsSwitch : MonoBehaviour
 {
    [SerializeField] private Neighbor _neighbor;
+   [SerializeField] private AudioSource _collectSectorEffect;
    private int _count;
 
-   public event Action<Sector> OnDeactivateSector;
    private void OnEnable()
    {
-      _neighbor.OnBurningSectors += SwitchSectors;
+      _neighbor.OnCollectSectors += SwitchSectors;
    }
 
    private void OnDisable()
    {
-      _neighbor.OnBurningSectors -= SwitchSectors;
+      _neighbor.OnCollectSectors -= SwitchSectors;
    }
 
    private void SwitchSectors(Sector[] sectors)
@@ -29,8 +28,8 @@ public class SectorsSwitch : MonoBehaviour
    {
       while (_count < sectors.Count)
       {
+         _collectSectorEffect.Play();
          sectors[_count].gameObject.SetActive(false);
-         OnDeactivateSector?.Invoke(sectors[_count]);
          _count++;
          yield return new WaitForSeconds(0.05f);
       }
