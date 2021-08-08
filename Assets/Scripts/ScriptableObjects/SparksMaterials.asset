@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 32b454ede450f6c46b8e5c6c289909fe, type: 3}
+  m_Name: SparksMaterials
+  m_EditorClassIdentifier: 
+  _materials:
+  - {fileID: 2100000, guid: 96742cf351ecc2b4da3280f5aaaa297d, type: 2}
+  - {fileID: 2100000, guid: ef5595a61c68a414682f979884228c52, type: 2}
+  - {fileID: 2100000, guid: d161de128fd3b1f4686c0539af6ef86b, type: 2}
+  - {fileID: 2100000, guid: 90ae8980e3ed7ea4a9fb7d603d7e674c, type: 2}
+  - {fileID: 2100000, guid: 513d204c5a2594444ba157830056ae56, type: 2}

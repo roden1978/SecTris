@@ -52,9 +52,9 @@ public class Neighbor: MonoBehaviour
    private void Search(Sector[,] bucket, int levelsAmount)
    {
        var investigatedArray = new Sector[Row,Column];
-       for (var z = levelsAmount; z >= 0; z--)
+       for (var z = levelsAmount; z > 1; z--)
        {
-           if (z < Row - 1) continue;
+           //if (z < Row - 1) continue;
            for (var i = 0; i < Row; i++)
            {
                for (var j = 0; j < Column; j++)
