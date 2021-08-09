@@ -86,8 +86,8 @@ public class Scores : MonoBehaviour
         while (_tmpScores > 0)
         {
             yield return null;
-            _scores++;
-            _tmpScores--;
+            _scores += 10;
+            _tmpScores -= 10;
             _scoresText.text = _scores.ToString();
         }
         HighScoresChange(_scores);

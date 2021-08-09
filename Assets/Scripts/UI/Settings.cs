@@ -19,6 +19,8 @@ namespace UI
         
         private const string Master = "MasterVolume"; 
         private const string Music = "MusicVolume";
+        private const string Effects = "EffectsVolume";
+        private const string UI = "UIVolume";
 
         private const float MaxValue = 0;
         private const float MinValue = -80;
@@ -37,6 +39,8 @@ namespace UI
         public void Mute(bool enable)
         {
             _mixer.audioMixer.SetFloat(Music, enable ? MinValue : MaxValue);
+            _mixer.audioMixer.SetFloat(Effects, enable ? MinValue : MaxValue);
+            _mixer.audioMixer.SetFloat(UI, enable ? MinValue : MaxValue);
         }
 
         public void ChangeVolume(float value)

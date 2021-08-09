@@ -8,7 +8,7 @@ public class SettingsData
 
     public SettingsData()
     {
-        _mute = 1;
-        _volume = 0.5f;
+        _mute = 0;
+        _volume = 1f;
     }
 }

@@ -8,7 +8,7 @@ public class Rotor : MonoBehaviour
 {
     [SerializeField] private SwipeDetection _swipeDetection;
     [SerializeField] private Pillar _pillar;
-    [SerializeField] [Range(0,8)] private int _angel = 6;
+    [SerializeField] [Range(0,18)] private int _angel = 12;
     
     private List<GameObject> _sectors;
 
