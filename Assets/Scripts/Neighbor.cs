@@ -1,11 +1,14 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using UnityEditor;
 using UnityEngine;
 
 public class Neighbor: MonoBehaviour
 {
-    private List<Sector> _findSectors;
-    private List<Sector> _allFindSectors;
+    private List<Sector> _foundVerticalSectors;
+    private List<Sector> _foundHorizontalSectors;
+    private List<Sector> _allFoundSectors;
 
     public event Action<int> OnScoreChanged; 
     public event Action<Sector[]> OnCollectSectors;
@@ -16,8 +19,9 @@ public class Neighbor: MonoBehaviour
 
   private void Awake()
     {
-        _findSectors = new List<Sector>();
-        _allFindSectors = new List<Sector>();
+        _foundVerticalSectors = new List<Sector>();
+        _foundHorizontalSectors = new List<Sector>();
+        _allFoundSectors = new List<Sector>();
     }
 
     public void FindNeighborSectors(List<GameObject> sectors)
@@ -51,28 +55,115 @@ public class Neighbor: MonoBehaviour
 
    private void Search(Sector[,] bucket, int levelsAmount)
    {
-       var investigatedArray = new Sector[Row,Column];
-       for (var z = levelsAmount; z > 1; z--)
+       var verticalArray = new Sector[Row, Column];
+       var horizontalArray = new Sector[Column];
+       //var rowSectors = new List<Sector>();
+       
+       
+       
+       for (var z = levelsAmount; z >= 0 ; z--)
        {
-           //if (z < Row - 1) continue;
-           for (var i = 0; i < Row; i++)
+           //var collectedSectors = new List<Sector>();
+           var oneColorList = new List<Sector>();
+           int indexElementWithEqualsColor = 0;
+
+           for (var j = 0; j < Column; j++)
            {
-               for (var j = 0; j < Column; j++)
-               {
-                   investigatedArray[i, j] = bucket[z - i, j];
-               }
+               horizontalArray[j] = bucket[z, j];
            }
 
-            var rowSectors = VerticalSearch(investigatedArray);
-            if(rowSectors.Count != 0)
-            {
-                OnScoreChanged?.Invoke(rowSectors.Count);
-                var copy = new Sector[rowSectors.Count];
-                rowSectors.CopyTo(copy);
-                OnCollectSectors?.Invoke(copy);
-            }
-            _allFindSectors.Clear();
+           for (var i = 0; i < Column; i++)
+           {
+               oneColorList = AssemblyOneColorArray(horizontalArray, horizontalArray[i], i);
+
+               if (oneColorList.Count < MinimumSectors - 1) continue;
+               indexElementWithEqualsColor = i;
+               break;
+           }
+           if (oneColorList.Count < MinimumSectors - 1) continue;
+           HorizontalSearch(oneColorList.ToArray(), horizontalArray[indexElementWithEqualsColor]);
+           
+           //collectedSectors.AddRange(columnSectors.ToArray());
+           //ArrayUtility.AddRange(ref collectedSectors, columnSectors.ToArray());
+           /*foreach (var sector in columnSectors)
+           {
+               collectedSectors.Add(sector);
+           }*/
+
+           if (z > 1)
+           {
+               for (var i = 0; i < Row; i++)
+               {
+                   for (var j = 0; j < Column; j++)
+                   {
+                       verticalArray[i, j] = bucket[z - i, j];
+                   }
+               }
+
+               VerticalSearch(verticalArray);
+               //Debug.Log($"Row {rowSectors.Count}");
+           }
+           
+           
+           //collectedSectors.AddRange(rowSectors.ToArray());
+           //ArrayUtility.AddRange(ref collectedSectors, rowSectors.ToArray());
+           /*foreach (var sector in rowSectors)
+           {
+               collectedSectors.Add(sector);
+           }*/
+           
+           
+           //Debug.Log($"Collected {collectedSectors.Count}");
+           //if (collectedSectors.Count == 0) continue;
+           
+           var noDupesCollectedSectors = _allFoundSectors.Distinct().ToList();
+           OnScoreChanged?.Invoke(noDupesCollectedSectors.Count);
+           //var copy = new Sector[noDupesCollectedSectors.Count];
+           //noDupesCollectedSectors.CopyTo(copy);
+           OnCollectSectors?.Invoke(noDupesCollectedSectors.ToArray());
+           _allFoundSectors.Clear();
        }
+   }
+
+   private List<Sector> HorizontalSearch(Sector[] sectors, Sector current)
+   {
+      // for (var i = 0; i < sectors.Length; i++)
+      // {
+      //     var current = sectors[0];
+      //     if (!current) continue;
+           
+           var arrayForNegative = PositiveHorizontalSearchNext(sectors, current);
+           if (arrayForNegative != null)
+                NegativeHorizontalSearchNext(arrayForNegative.ToArray(), current);
+           
+           if(_foundHorizontalSectors.Count >= MinimumSectors - 1)
+               _foundHorizontalSectors.Add(current);
+           else
+               _foundHorizontalSectors.Clear();
+         
+           foreach (var sector in _foundHorizontalSectors)
+           {
+               _allFoundSectors.Add(sector);
+           }
+           _foundHorizontalSectors.Clear();
+       //}
+       return _allFoundSectors;
+   }
+
+   private List<Sector> AssemblyOneColorArray(IReadOnlyList<Sector> sectors, Sector current, int i)
+   {
+       var oneColorArray = new List<Sector>();
+       for (var j = 0; j < Column; j++)
+       {
+           if (!sectors[j] || !current || j == i) continue;
+           
+           //if (!sectors[j] ) continue;
+           
+           if(current.GetColorIndex() == sectors[j].GetColorIndex())
+               oneColorArray.Add(sectors[j]);
+       }
+
+       return oneColorArray;
    }
    private List<Sector> VerticalSearch(Sector[,] sectors)
    {
@@ -87,22 +178,23 @@ public class Neighbor: MonoBehaviour
            var current = array[0];
            if (!current) continue;
            
-           SearchNext(array, current, 0);
+           SearchNextVertical(array, current, 0);
            
-           if(_findSectors.Count < MinimumSectors)
+           if(_foundVerticalSectors.Count < MinimumSectors)
            {
-               _findSectors.Clear();
+               _foundVerticalSectors.Clear();
                continue;
            }
-           foreach (var sector in _findSectors)
+           
+           foreach (var sector in _foundVerticalSectors)
            {
-               _allFindSectors.Add(sector);
+               _allFoundSectors.Add(sector);
            }
-           _findSectors.Clear();
+           _foundVerticalSectors.Clear();
        }
-       return _allFindSectors; 
+       return _allFoundSectors; 
    }
-   private List<Sector> RemainingSectors(IReadOnlyList<Sector> sectors, Sector current, int i)
+   private List<Sector> RemainingVerticalSectors(IReadOnlyList<Sector> sectors, Sector current, int i)
 
    {
        if(i + 1 > sectors.Count) return null;
@@ -117,20 +209,72 @@ public class Neighbor: MonoBehaviour
        else
         return null;
        
-        AddEquals(current);
+        AddVerticalEquals(current);
 
        return sectorsNew;
 
    }
 
-   private void SearchNext(Sector[] array, Sector current, int i)
+   private List<Sector> PositiveHorizontalSearchNext(Sector[] array, Component current)
+   {
+       var nextArray = new List<Sector>();
+       var currentAngel = 0;
+       if (array.Length == 0) return nextArray;
+       
+       if(current.transform.eulerAngles.y < 1)  
+            currentAngel = (int) Mathf.Ceil(current.transform.eulerAngles.y);
+       
+       for (var i = currentAngel + 72; i < 360; i += 72)
+       {
+           if (array.Length == 0) break;
+           nextArray = RemainingHorizontalSectors(array, array[0], i);
+           array = nextArray.ToArray();
+       }
+
+       return nextArray;
+   }
+   
+   private void NegativeHorizontalSearchNext(Sector[] array, Component current)
+   {
+       if (array.Length <= 0) return;
+       
+       //var currentAngel = (int) Mathf.Ceil(current.transform.eulerAngles.y);
+       for (var i = 360 - 72; i > 0; i -= 72)
+       {
+           if (array.Length == 0) break;
+           var nextArray = RemainingHorizontalSectors(array, array[0], i);
+           array = nextArray.ToArray();
+       }
+   }
+
+   private List<Sector> RemainingHorizontalSectors(Sector[] sectors, Sector current, int angel)
+   {
+       var sectorsNew = new List<Sector>();
+      
+           var currentAngel = (int) Mathf.Ceil(current.transform.eulerAngles.y);
+           if(currentAngel == angel && sectors.Length > 0)
+           {
+               for (int i = 1; i < sectors.Length; i++)
+               {
+                   sectorsNew.Add(sectors[i]);
+               }
+
+               _foundHorizontalSectors.Add(current);
+           }
+           else
+           {
+               return sectors.ToList();
+           }
+       return sectorsNew;
+   }
+   private void SearchNextVertical(Sector[] array, Sector current, int i)
    {
        while (true)
        {
-           var nextArray = RemainingSectors(array, current, i);
+           var nextArray = RemainingVerticalSectors(array, current, i);
            if (nextArray == null) return;
            if (i + 1 == nextArray.Count)
-               AddEquals(nextArray[0]);
+               AddVerticalEquals(nextArray[0]);
            else
            {
                array = nextArray.ToArray();
@@ -143,8 +287,8 @@ public class Neighbor: MonoBehaviour
        }
    }
 
-   private void AddEquals(Sector sector)
+   private void AddVerticalEquals(Sector sector)
    {
-        _findSectors.Add(sector);
+       _foundVerticalSectors.Add(sector);
    }
 }
