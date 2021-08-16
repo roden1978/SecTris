@@ -26,7 +26,7 @@ public class TorusSectors : MonoBehaviour
         for (var i = 0; i < SectorAmount; i++)
         {
             var index = Random.Range(0, SectorAmount);
-            var material = materials.GetMaterial(index);
+            var material = materials.GetMaterial(index); 
             var chance = Random.Range(0, 101);
 
             if (chance <= Border) continue;
