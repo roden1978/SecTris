@@ -8,13 +8,13 @@ public class Rotor : MonoBehaviour
 {
     [SerializeField] private SwipeDetection _swipeDetection;
     [SerializeField] private Pillar _pillar;
-    [SerializeField] [Range(0,18)] private int _angel = 12;
+    [SerializeField] [Range(0,72)] private int _angel = 12;
     
     private List<GameObject> _sectors;
 
     private bool _canRotate = true;
 
-    private float _delta;
+    private int _delta;
 
     private const int Left = 1;
     private const int Right = -1;
@@ -57,11 +57,11 @@ public class Rotor : MonoBehaviour
                 _delta++;
             }
 
-            yield return null;
+            yield return new WaitForFixedUpdate();
         }
 
         _canRotate = true;
-        _delta = 0.0f;
+        _delta = 0;
     }
 
     private void ChangeMovedList(List<GameObject> sectors)

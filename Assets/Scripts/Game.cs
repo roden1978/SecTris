@@ -33,6 +33,7 @@ public class Game : MonoBehaviour
 
     private void Start()
     {
+        
         _settingsData = (SettingsData) LoadSettingsData(_settingsData);
         UpdateMixerSettings(_settingsData);
 

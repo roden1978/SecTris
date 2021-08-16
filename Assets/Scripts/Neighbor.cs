@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using UnityEditor;
 using UnityEngine;
 
 public class Neighbor: MonoBehaviour
@@ -57,15 +56,24 @@ public class Neighbor: MonoBehaviour
    {
        var verticalArray = new Sector[Row, Column];
        var horizontalArray = new Sector[Column];
-       //var rowSectors = new List<Sector>();
-       
-       
        
        for (var z = levelsAmount; z >= 0 ; z--)
        {
-           //var collectedSectors = new List<Sector>();
+           if (z > 1)
+           {
+               for (var i = 0; i < Row; i++)
+               {
+                   for (var j = 0; j < Column; j++)
+                   {
+                       verticalArray[i, j] = bucket[z - i, j];
+                   }
+               }
+
+               VerticalSearch(verticalArray);
+           }
+           
            var oneColorList = new List<Sector>();
-           int indexElementWithEqualsColor = 0;
+           var indexElementWithEqualsColor = 0;
 
            for (var j = 0; j < Column; j++)
            {
@@ -80,47 +88,14 @@ public class Neighbor: MonoBehaviour
                indexElementWithEqualsColor = i;
                break;
            }
-           if (oneColorList.Count < MinimumSectors - 1) continue;
-           HorizontalSearch(oneColorList.ToArray(), horizontalArray[indexElementWithEqualsColor]);
-           
-           //collectedSectors.AddRange(columnSectors.ToArray());
-           //ArrayUtility.AddRange(ref collectedSectors, columnSectors.ToArray());
-           /*foreach (var sector in columnSectors)
-           {
-               collectedSectors.Add(sector);
-           }*/
-
-           if (z > 1)
-           {
-               for (var i = 0; i < Row; i++)
-               {
-                   for (var j = 0; j < Column; j++)
-                   {
-                       verticalArray[i, j] = bucket[z - i, j];
-                   }
-               }
-
-               VerticalSearch(verticalArray);
-               //Debug.Log($"Row {rowSectors.Count}");
-           }
-           
-           
-           //collectedSectors.AddRange(rowSectors.ToArray());
-           //ArrayUtility.AddRange(ref collectedSectors, rowSectors.ToArray());
-           /*foreach (var sector in rowSectors)
-           {
-               collectedSectors.Add(sector);
-           }*/
-           
-           
-           //Debug.Log($"Collected {collectedSectors.Count}");
-           //if (collectedSectors.Count == 0) continue;
+           if (oneColorList.Count >= MinimumSectors - 1)
+                HorizontalSearch(oneColorList.ToArray(), horizontalArray[indexElementWithEqualsColor]);
            
            var noDupesCollectedSectors = _allFoundSectors.Distinct().ToList();
            OnScoreChanged?.Invoke(noDupesCollectedSectors.Count);
-           //var copy = new Sector[noDupesCollectedSectors.Count];
-           //noDupesCollectedSectors.CopyTo(copy);
-           OnCollectSectors?.Invoke(noDupesCollectedSectors.ToArray());
+           var copy = new Sector[noDupesCollectedSectors.Count];
+           noDupesCollectedSectors.CopyTo(copy);
+           OnCollectSectors?.Invoke(copy);
            _allFoundSectors.Clear();
        }
    }
@@ -198,63 +173,68 @@ public class Neighbor: MonoBehaviour
 
    {
        if(i + 1 > sectors.Count) return null;
-       var sectorsNew = new List<Sector>();
+       var verticalSectorsNew = new List<Sector>();
 
        if (!sectors[i + 1]  || !current) return null;
        if (current.GetColorIndex() == sectors[i + 1].GetColorIndex())
            for (var j = i + 1; j < sectors.Count; j++)
            {
-            sectorsNew.Add(sectors[j]);
+               verticalSectorsNew.Add(sectors[j]);
            }
        else
         return null;
        
         AddVerticalEquals(current);
 
-       return sectorsNew;
+       return verticalSectorsNew;
 
    }
 
    private List<Sector> PositiveHorizontalSearchNext(Sector[] array, Component current)
    {
        var nextArray = new List<Sector>();
-       var currentAngel = 0;
+       int currentAngel;
        if (array.Length == 0) return nextArray;
-       
-       if(current.transform.eulerAngles.y < 1)  
-            currentAngel = (int) Mathf.Ceil(current.transform.eulerAngles.y);
+
+       if (current.transform.eulerAngles.y < 1)
+           currentAngel = 0;
+       else
+           currentAngel = Mathf.RoundToInt(current.transform.eulerAngles.y);
        
        for (var i = currentAngel + 72; i < 360; i += 72)
        {
-           if (array.Length == 0) break;
            nextArray = RemainingHorizontalSectors(array, array[0], i);
+           if (nextArray.Count == 0) break;
            array = nextArray.ToArray();
        }
 
-       return nextArray;
+       return array.ToList();
    }
    
    private void NegativeHorizontalSearchNext(Sector[] array, Component current)
    {
-       if (array.Length <= 0) return;
        
-       //var currentAngel = (int) Mathf.Ceil(current.transform.eulerAngles.y);
+       if (array.Length <= 0) return;
+
+       var reversArray = array.Reverse().ToArray();
+       
        for (var i = 360 - 72; i > 0; i -= 72)
        {
-           if (array.Length == 0) break;
-           var nextArray = RemainingHorizontalSectors(array, array[0], i);
-           array = nextArray.ToArray();
+           if (reversArray.Length == 0) break;
+           var nextArray = RemainingHorizontalSectors(reversArray, reversArray[0], i);
+           reversArray = nextArray.ToArray();
        }
    }
 
    private List<Sector> RemainingHorizontalSectors(Sector[] sectors, Sector current, int angel)
    {
        var sectorsNew = new List<Sector>();
-      
-           var currentAngel = (int) Mathf.Ceil(current.transform.eulerAngles.y);
-           if(currentAngel == angel && sectors.Length > 0)
+       if (sectors.Length == 0) return sectorsNew;
+       
+           var currentAngel = Mathf.RoundToInt(current.transform.eulerAngles.y);
+           if(currentAngel == angel)
            {
-               for (int i = 1; i < sectors.Length; i++)
+               for (var i = 1; i < sectors.Length; i++)
                {
                    sectorsNew.Add(sectors[i]);
                }
@@ -263,7 +243,7 @@ public class Neighbor: MonoBehaviour
            }
            else
            {
-               return sectors.ToList();
+               return new List<Sector>();
            }
        return sectorsNew;
    }

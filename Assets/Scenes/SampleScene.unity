@@ -2461,7 +2461,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _neighbor: {fileID: 1775139489}
   _collectSectorEffect: {fileID: 662492336}
-  _delay: 0.1
+  _delay: 0.01
 --- !u!82 &662492336
 AudioSource:
   m_ObjectHideFlags: 0
@@ -6294,7 +6294,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _swipeDetection: {fileID: 1129597128}
   _pillar: {fileID: 102349071}
-  _angel: 12
+  _angel: 36
 --- !u!1 &1875479921
 GameObject:
   m_ObjectHideFlags: 0
