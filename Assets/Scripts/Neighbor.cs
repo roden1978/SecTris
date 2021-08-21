@@ -100,16 +100,11 @@ public class Neighbor: MonoBehaviour
        }
    }
 
-   private List<Sector> HorizontalSearch(Sector[] sectors, Sector current)
+   private void HorizontalSearch(Sector[] sectors, Sector current)
    {
-      // for (var i = 0; i < sectors.Length; i++)
-      // {
-      //     var current = sectors[0];
-      //     if (!current) continue;
-           
-           var arrayForNegative = PositiveHorizontalSearchNext(sectors, current);
+     var arrayForNegative = ClockwiseSearchNext(sectors, current);
            if (arrayForNegative != null)
-                NegativeHorizontalSearchNext(arrayForNegative.ToArray(), current);
+                CounterClockwiseSearchNext(arrayForNegative.ToArray(), current);
            
            if(_foundHorizontalSectors.Count >= MinimumSectors - 1)
                _foundHorizontalSectors.Add(current);
@@ -121,8 +116,7 @@ public class Neighbor: MonoBehaviour
                _allFoundSectors.Add(sector);
            }
            _foundHorizontalSectors.Clear();
-       //}
-       return _allFoundSectors;
+      
    }
 
    private List<Sector> AssemblyOneColorArray(IReadOnlyList<Sector> sectors, Sector current, int i)
@@ -132,15 +126,13 @@ public class Neighbor: MonoBehaviour
        {
            if (!sectors[j] || !current || j == i) continue;
            
-           //if (!sectors[j] ) continue;
-           
            if(current.GetColorIndex() == sectors[j].GetColorIndex())
                oneColorArray.Add(sectors[j]);
        }
 
        return oneColorArray;
    }
-   private List<Sector> VerticalSearch(Sector[,] sectors)
+   private void VerticalSearch(Sector[,] sectors)
    {
        var array = new Sector[Row];
        for (var i = 0; i < Column; i++)
@@ -167,7 +159,6 @@ public class Neighbor: MonoBehaviour
            }
            _foundVerticalSectors.Clear();
        }
-       return _allFoundSectors; 
    }
    private List<Sector> RemainingVerticalSectors(IReadOnlyList<Sector> sectors, Sector current, int i)
 
@@ -190,7 +181,7 @@ public class Neighbor: MonoBehaviour
 
    }
 
-   private List<Sector> PositiveHorizontalSearchNext(Sector[] array, Component current)
+   private List<Sector> ClockwiseSearchNext(Sector[] array, Component current)
    {
        var nextArray = new List<Sector>();
        int currentAngel;
@@ -211,17 +202,24 @@ public class Neighbor: MonoBehaviour
        return array.ToList();
    }
    
-   private void NegativeHorizontalSearchNext(Sector[] array, Component current)
+   private void CounterClockwiseSearchNext(IReadOnlyCollection<Sector> array, Component current)
    {
        
-       if (array.Length <= 0) return;
-
+       if (array.Count <= 0) return;
+       int currentAngel;
        var reversArray = array.Reverse().ToArray();
        
-       for (var i = 360 - 72; i > 0; i -= 72)
+       if (current.transform.eulerAngles.y < 1)
+           currentAngel = 0;
+       else
+           currentAngel = Mathf.RoundToInt(current.transform.eulerAngles.y);
+       
+       var startAngel = currentAngel == 0 ? 360 - 72 : 0;
+       
+       for (var i = startAngel; i > 0; i -= 72)
        {
-           if (reversArray.Length == 0) break;
            var nextArray = RemainingHorizontalSectors(reversArray, reversArray[0], i);
+           if (nextArray.Count == 0) break;
            reversArray = nextArray.ToArray();
        }
    }

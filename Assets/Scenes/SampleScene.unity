@@ -4258,7 +4258,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8cfcfcd075595f149a41590c3a947d9a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _bucket: {fileID: 0}
+  _bucket: {fileID: 531729531}
 --- !u!135 &1342566032
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -5901,8 +5901,8 @@ TrailRenderer:
       serializedVersion: 2
       m_Curve:
       - serializedVersion: 3
-        time: 0.010307312
-        value: 0.1190567
+        time: 0
+        value: 0.3
         inSlope: 0
         outSlope: 0
         tangentMode: 0

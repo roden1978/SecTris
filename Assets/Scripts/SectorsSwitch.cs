@@ -8,7 +8,6 @@ public class SectorsSwitch : MonoBehaviour
    [SerializeField] private Neighbor _neighbor;
    [SerializeField] private AudioSource _collectSectorEffect;
    [SerializeField] [Range(0.01f, 0.1f)] private float _delay = 0.05f;
-   //private int _count;
 
    public event Action<Sector> OnCollect; 
 
@@ -24,7 +23,6 @@ public class SectorsSwitch : MonoBehaviour
 
    private void CollectSectors(Sector[] sectors)
    {
-      //_count = 0;
       StartCoroutine(Collect(sectors));
    }
 
@@ -33,7 +31,6 @@ public class SectorsSwitch : MonoBehaviour
       var count = 0;
       while (count < sectors.Count)
       {
-         Debug.Log(count);
          OnCollect?.Invoke(sectors[count]);
          _collectSectorEffect.Play();
          sectors[count].gameObject.SetActive(false);

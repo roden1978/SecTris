@@ -26,7 +26,6 @@ public class SparksPrincipal : MonoBehaviour
 
         var center = sector.GetComponent<MeshRenderer>().bounds.center;
         spark.transform.position = center;
-        Debug.Log(center);
         spark.SetActive(true);
     }
     
