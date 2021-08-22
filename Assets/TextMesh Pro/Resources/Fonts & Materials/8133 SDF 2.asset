@@ -141,7 +141,7 @@ Material:
     m_Colors:
     - _ClipRect: {r: -32767, g: -32767, b: 32767, a: 32767}
     - _EnvMatrixRotation: {r: 0, g: 0, b: 0, a: 0}
-    - _FaceColor: {r: 8.47419, g: 0, b: 6.6551228, a: 1}
+    - _FaceColor: {r: 5.0135255, g: 5.0135255, b: 8.47419, a: 1}
     - _GlowColor: {r: 0, g: 1, b: 0, a: 0.5}
     - _MaskCoord: {r: 0, g: 0, b: 32767, a: 32767}
     - _OutlineColor: {r: 0, g: 0, b: 0, a: 1}
@@ -160,11 +160,11 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 71c1514a6bd24e1e882cebbe1904ce04, type: 3}
-  m_Name: 8133 SDF
+  m_Name: 8133 SDF 2
   m_EditorClassIdentifier: 
-  hashCode: 1788359704
+  hashCode: 1903533578
   material: {fileID: -5009326862174639718}
-  materialHashCode: 544468152
+  materialHashCode: 829072490
   m_Version: 1.1.0
   m_SourceFontFileGUID: 68197de113a66dc46992e29890523742
   m_SourceFontFile_EditorRef: {fileID: 12800000, guid: 68197de113a66dc46992e29890523742, type: 3}
