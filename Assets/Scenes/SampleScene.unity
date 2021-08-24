@@ -3950,7 +3950,7 @@ GameObject:
   - component: {fileID: 1285231373}
   - component: {fileID: 1285231374}
   m_Layer: 0
-  m_Name: SparksPrincipal
+  m_Name: FloatingScoresPrincipal
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3979,12 +3979,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 1285231372}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2448d8ffa1f3b3042befef936fb47c6b, type: 3}
+  m_Script: {fileID: 11500000, guid: 37234a6b2b3c67745955706c136acd3c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _sparksPool: {fileID: 770239223}
+  _scoresPool: {fileID: 770239223}
   _sectorsSwitch: {fileID: 662492335}
-  _materials: {fileID: 11400000, guid: 91c34f1e406484f48bd8a161d8126710, type: 2}
+  _materials: {fileID: 11400000, guid: f253ce24b65bbfa489ed85fffc128528, type: 2}
+  _scores: {fileID: 1494171407}
 --- !u!1 &1293825867
 GameObject:
   m_ObjectHideFlags: 0

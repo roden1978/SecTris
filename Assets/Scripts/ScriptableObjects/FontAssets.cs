@@ -7,14 +7,14 @@ namespace ScriptableObjects
     [CreateAssetMenu(fileName = "Font Assets List", menuName = "Font Assets List", order = 1)]
     public sealed class FontAssets : ScriptableObject
     {
-        [SerializeField] private TMP_Asset[] _assets;
+        [SerializeField] private TMP_FontAsset[] _assets;
 
-        public TMP_Asset[] GetAssets()
+        public TMP_FontAsset[] GetAssets()
         {
             return _assets;
         }
 
-        public TMP_Asset GetTMPAsset(int index)
+        public TMP_FontAsset GetTMPAsset(int index)
         {
             if (index < _assets.Length)
             {

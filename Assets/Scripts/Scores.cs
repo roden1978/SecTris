@@ -106,4 +106,6 @@ public class Scores : MonoBehaviour
             }
         }
     }
+
+    public int GetSectorPrice() => _sectorPrice;
 }
