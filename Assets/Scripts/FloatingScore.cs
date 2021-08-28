@@ -30,9 +30,10 @@ public class FloatingScore : MonoBehaviour
         
         while (transform.position.y < positionCameraTopEdge.y)
         {
+            var currentPosition = transform.position;
             var position = new Vector3(_animationCurve.Evaluate(_currentTime) * delta,
-                transform.position.y + positionCameraTopEdge.y * (Time.deltaTime * _speed), 
-                transform.position.z);
+                currentPosition.y + positionCameraTopEdge.y * (Time.deltaTime * _speed), 
+                currentPosition.z);
             
             _rigidbody.MovePosition(position);
             _currentTime += Time.deltaTime;
