@@ -21,14 +21,19 @@ public class FloatingScoresPrincipal : MonoBehaviour
     private void StartScores(Sector sector)
     {
         var score = _scoresPool.GetPooledObject();
-        var scoreTextMeshPro = score.GetComponent<TMP_Text>();
-        var index = sector.GetColorIndex();
-        scoreTextMeshPro.font = _materials.GetTMPAsset(index);
-        scoreTextMeshPro.text = "+" + _scores.GetSectorPrice();
+        if(score.TryGetComponent(out TMP_Text scoreTextMeshPro))
+        {
+            var index = sector.GetColorIndex();
+            scoreTextMeshPro.font = _materials.GetTMPAsset(index);
+            scoreTextMeshPro.text = "+" + _scores.GetSectorPrice();
+        }
 
-        var center = sector.GetComponent<MeshRenderer>().bounds.center;
-        score.transform.position = center;
-        score.SetActive(true);
+
+        if (sector.TryGetComponent(out MeshRenderer meshRenderer))
+        {
+            score.transform.position = meshRenderer.bounds.center;
+            score.SetActive(true);
+        }
     }
     
     

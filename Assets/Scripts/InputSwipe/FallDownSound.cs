@@ -4,22 +4,22 @@ namespace InputSwipe
 {
     public class FallDownSound : MonoBehaviour
     {
-        [SerializeField] private AudioSource fallDownSound;
-        [SerializeField] private SwipeDetection swipeDetection;
+        [SerializeField] private AudioSource _fallDownSound;
+        [SerializeField] private SwipeDetection _swipeDetection;
 
         private void OnEnable()
         {
-            swipeDetection.OnSwipeDown += Play;
+            _swipeDetection.OnSwipeDown += Play;
         }
 
         private void OnDisable()
         {
-            swipeDetection.OnSwipeDown -= Play;
+            _swipeDetection.OnSwipeDown -= Play;
         }
 
         private void Play()
         {
-            fallDownSound.Play();
+            _fallDownSound.Play();
         }
     }
 }

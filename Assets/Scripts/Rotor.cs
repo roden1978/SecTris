@@ -10,15 +10,16 @@ public class Rotor : MonoBehaviour
     [SerializeField] private Pillar _pillar;
     [SerializeField] [Range(0,72)] private int _angel = 12;
     
-    private List<GameObject> _sectors;
-
-    private bool _canRotate = true;
-
-    private int _delta;
-
     private const int Left = 1;
     private const int Right = -1;
     private const float RotateDegrees = 72;
+    
+    private List<GameObject> _sectors;
+
+    private bool _canRotate = true;
+    private int _delta;
+
+    
 
     private void OnEnable()
     {

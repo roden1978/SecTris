@@ -11,14 +11,15 @@ public class Game : MonoBehaviour
     [SerializeField] private Scores _scores;
     [SerializeField] private Settings _settings;
     [SerializeField] private AudioSource _backgroundMusic;
-
-    private IStorage _storage;
-
-    private GameData _gameData;
-    private SettingsData _settingsData;
+    [SerializeField] private AudioSource _startButtonSound;
 
     private const string SettingsFileName = "settings.dat";
     private const string GameDataFileName = "gamedata.dat";
+    
+    private IStorage _storage;
+    private GameData _gameData;
+    private SettingsData _settingsData;
+ 
     public event Action OnGameOver;
     public event Action OnGameStart;
     public event Action<SettingsData> OnNewSettingsData; 
@@ -127,5 +128,9 @@ public class Game : MonoBehaviour
     private void StartBackgroundMusic()
     {
         _backgroundMusic.Play();
+    }
+    public void StartPlaySound()
+    {
+        _startButtonSound.Play();
     }
 }

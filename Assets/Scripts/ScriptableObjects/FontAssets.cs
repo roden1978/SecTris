@@ -9,11 +9,6 @@ namespace ScriptableObjects
     {
         [SerializeField] private TMP_FontAsset[] _assets;
 
-        public TMP_FontAsset[] GetAssets()
-        {
-            return _assets;
-        }
-
         public TMP_FontAsset GetTMPAsset(int index)
         {
             if (index < _assets.Length)

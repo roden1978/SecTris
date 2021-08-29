@@ -5,16 +5,16 @@ using Random = UnityEngine.Random;
 
 public class TorusSectors : MonoBehaviour
 {
-    [SerializeField] private SectorTuner sectorsTuner;
-    [SerializeField] private Transform spawnPoint;
-    [SerializeField] private Materials materials;
-    
-    private List<GameObject> _tunedSectors;
+    [SerializeField] private SectorTuner _sectorsTuner;
+    [SerializeField] private Transform _spawnPoint;
+    [SerializeField] private Materials _materials;
+    [SerializeField][Range(0, 100)] private int _createSectorChance = 20;
     
     private const int SectorAmount = 5;
     private const int DefaultAngel = 72;
-    private const int Border = 20;
-
+    
+    private List<GameObject> _tunedSectors;
+    
     private void Start()
     {
         _tunedSectors = new List<GameObject>();
@@ -26,13 +26,13 @@ public class TorusSectors : MonoBehaviour
         for (var i = 0; i < SectorAmount; i++)
         {
             var index = Random.Range(0, SectorAmount);
-            var material = materials.GetMaterial(index); 
+            var material = _materials.GetMaterial(index); 
             var chance = Random.Range(0, 101);
 
-            if (chance <= Border) continue;
+            if (chance <= _createSectorChance) continue;
             var angel = i * DefaultAngel;
-            var position = spawnPoint.position;
-            _tunedSectors.Add(sectorsTuner.TuneSector(position, material, angel, index));
+            var position = _spawnPoint.position;
+            _tunedSectors.Add(_sectorsTuner.TuneSector(position, material, angel, index));
         }
 
         return _tunedSectors;

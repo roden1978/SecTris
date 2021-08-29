@@ -8,11 +8,6 @@ namespace ScriptableObjects
     {
         [SerializeField] private Material[] _materials;
 
-        public Material[] GetMaterials()
-        {
-            return _materials;
-        }
-
         public Material GetMaterial(int index)
         {
             if (index < _materials.Length)

@@ -6,11 +6,11 @@ namespace UI
 {
     public class Background : MonoBehaviour
     {
-        [SerializeField] private Backgrounds backgrounds;
-        [SerializeField] private Image image;   
+        [SerializeField] private Backgrounds _backgrounds;
+        [SerializeField] private Image _image;   
         public void ChangeBackground()
         {
-            image.sprite = backgrounds.GetSprite();
+            _image.sprite = _backgrounds.GetSprite();
         }
     }
 }

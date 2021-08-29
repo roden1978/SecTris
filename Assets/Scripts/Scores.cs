@@ -12,6 +12,7 @@ public class Scores : MonoBehaviour
     [SerializeField] private TMP_Text _scoresText;
     [SerializeField] private TMP_Text _highScoresText;
     [SerializeField] private int _highScores;
+    [SerializeField][Range(1, 10)] private int _scoresOffset = 10;
     
     private int _scores;
     private int _tmpScores;
@@ -86,8 +87,8 @@ public class Scores : MonoBehaviour
         while (_tmpScores > 0)
         {
             yield return null;
-            _scores += 10;
-            _tmpScores -= 10;
+            _scores += _scoresOffset;
+            _tmpScores -= _scoresOffset;
             _scoresText.text = _scores.ToString();
         }
         HighScoresChange(_scores);

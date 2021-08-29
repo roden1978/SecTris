@@ -9,6 +9,7 @@ namespace InputSwipe
     {
         [SerializeField] private Game _game;
         [SerializeField] private Bucket _bucket;
+        
         private SectorControls _sectorControls;
         private Camera _mainCamera;
         private bool _isControl;

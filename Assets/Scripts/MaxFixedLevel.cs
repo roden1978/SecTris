@@ -16,13 +16,15 @@ public class MaxFixedLevel : IMaxFixedLevel
       
         foreach (var item in _list)
         {
-            var meshRenderer = item.GetComponent<MeshRenderer>();
-            var sectorHeight = meshRenderer.bounds.size.y;
-            var level = Mathf.RoundToInt(item.transform.position.y / sectorHeight);
-            
-            if (level > maxPosition)
+            if(item.TryGetComponent(out MeshRenderer meshRenderer))
             {
-                maxPosition = level;
+                var sectorHeight = meshRenderer.bounds.size.y;
+                var level = Mathf.RoundToInt(item.transform.position.y / sectorHeight);
+
+                if (level > maxPosition)
+                {
+                    maxPosition = level;
+                }
             }
         }
         return maxPosition;

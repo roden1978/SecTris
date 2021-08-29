@@ -19,7 +19,7 @@ public class Pool : MonoBehaviour
 
     private void Initialize()
     {
-        for (int i = 0; i < _capacity; i++)
+        for (var i = 0; i < _capacity; i++)
         {
             var pooledObject = Instantiate(_prefab, transform); 
             pooledObject.name = _prefab.name + "(" + _index + ")";

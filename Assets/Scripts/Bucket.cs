@@ -6,22 +6,23 @@ using UnityEngine;
 public class Bucket : MonoBehaviour
 {
     [SerializeField] private Pool _pool;
-   
     [SerializeField] private Neighbor _neighbor;
     [SerializeField] private Game _game;
+    [SerializeField][Range(0.1f, 0.5f)] private float _updateBucketDelay = 0.1f;
+    [SerializeField][Range(0.1f, 1f)] private float _removeNotActiveDelay = 0.5f;
     
     private const float StopPoint = 5f;
+    public event Action OnOverflowBucket;
+    public event Action<float> OnChangeBucketHeight;
+
     private IBucketHeight _bucketHeight;
     private List<GameObject> _bucket;
-    
-    public event Action OnOverflowBucket;
-
-    public event Action<float> OnChangeBucketHeight;
-    
+        
     private Coroutine _updateBucket;
     private Coroutine _removeNotActive;
     
     private int _prevFixedCount;
+    
     private float _prevBucketHeight;
     private float _currentBucketHeight;
     private void Awake()
@@ -44,8 +45,8 @@ public class Bucket : MonoBehaviour
     private void StartUpdateBucket()
     {
         _currentBucketHeight = 0;
-        _updateBucket = StartCoroutine(UpdateBucket(.1f));
-        _removeNotActive = StartCoroutine(RemoveNotActive(.5f));
+        _updateBucket = StartCoroutine(UpdateBucket(_updateBucketDelay));
+        _removeNotActive = StartCoroutine(RemoveNotActive(_removeNotActiveDelay));
     }
 
     private void StopUpdateBucket()
@@ -94,8 +95,8 @@ public class Bucket : MonoBehaviour
         var active = _pool.GetAllActive();
         foreach (var sector in active)
         {
-            var sectorRigidbody = sector.transform.GetComponent<Rigidbody>();
-            if (sectorRigidbody.isKinematic)
+            if (sector.transform.TryGetComponent(out Rigidbody sectorRigidbody) && 
+                sectorRigidbody.isKinematic)
                 _bucket.Add(sector);
         }
     }

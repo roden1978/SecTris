@@ -12,10 +12,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5b0e05feadf7b3841a0135211d8c676d, type: 3}
   m_Name: BackgroundsList
   m_EditorClassIdentifier: 
-  sprites:
+  _sprites:
   - {fileID: 21300000, guid: 538ab085217eb024e978e9814616926e, type: 3}
   - {fileID: 21300000, guid: 4a8a1359e71deb040890cd8b2b703a14, type: 3}
   - {fileID: 21300000, guid: 77d34c511ea1d684a803fc147a7507ff, type: 3}
+  - {fileID: 21300000, guid: 95f1c82b623b1e043bfe96a5590be809, type: 3}
   - {fileID: 21300000, guid: 4736b829c08feec40a79c6b3deccb198, type: 3}
   - {fileID: 21300000, guid: b0ded4ef3dca1ac4e83b601de9290cb9, type: 3}
   - {fileID: 21300000, guid: b45862d9c08fd2b4a8a85dd59ef51b01, type: 3}
