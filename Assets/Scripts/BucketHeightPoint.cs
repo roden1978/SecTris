@@ -4,7 +4,7 @@ public class BucketHeightPoint : MonoBehaviour
 {
     [SerializeField] private Bucket _bucket;
     private float _height;
-    void Update()
+    private void Update()
     {
         transform.position = new Vector3(0, _height, 0);
     }

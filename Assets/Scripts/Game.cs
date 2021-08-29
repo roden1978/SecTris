@@ -13,13 +13,13 @@ public class Game : MonoBehaviour
     [SerializeField] private AudioSource _backgroundMusic;
     [SerializeField] private AudioSource _startButtonSound;
 
-    private IStorage _storage;
-
-    private GameData _gameData;
-    private SettingsData _settingsData;
-
     private const string SettingsFileName = "settings.dat";
     private const string GameDataFileName = "gamedata.dat";
+    
+    private IStorage _storage;
+    private GameData _gameData;
+    private SettingsData _settingsData;
+ 
     public event Action OnGameOver;
     public event Action OnGameStart;
     public event Action<SettingsData> OnNewSettingsData; 
