@@ -15,9 +15,13 @@ public class BucketHeight: IBucketHeight
    public float Value()
    {
       if (_list.Count == 0) return _floor;
-      var delta = _list[0].GetComponent<MeshRenderer>().bounds.size.y + _floor;
+      
+      if (!_list[0].TryGetComponent(out MeshRenderer meshRenderer)) return 0;
+      
+      var delta = meshRenderer.bounds.size.y + _floor;
       var value = _list.Select(item => 
-         item.transform.position.y).Prepend(float.MinValue).Max();
+          item.transform.position.y).Prepend(float.MinValue).Max();
+      
       return value + delta;
    }
 }
