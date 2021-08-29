@@ -6,17 +6,12 @@ namespace ScriptableObjects
     [CreateAssetMenu(fileName = "Backgrounds List", menuName = "Backgrounds List", order = 51)]
     public sealed class Backgrounds : ScriptableObject
     {
-        [SerializeField] private Sprite[] sprites;
+        [SerializeField] private Sprite[] _sprites;
 
-        public Sprite[] GetSprites()
+       public Sprite GetSprite()
         {
-            return sprites;
-        }
-
-        public Sprite GetSprite()
-        {
-            var index = Random.Range(0, sprites.Length);
-            return sprites[index];
+            var index = Random.Range(0, _sprites.Length);
+            return _sprites[index];
         }
     }
 }

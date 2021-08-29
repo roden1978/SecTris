@@ -4,25 +4,25 @@ namespace InputSwipe
 {
     public class SwipeSound : MonoBehaviour
     {
-        [SerializeField] private AudioSource swipeSound;
-        [SerializeField] private SwipeDetection swipeDetection;
+        [SerializeField] private AudioSource _swipeSound;
+        [SerializeField] private SwipeDetection _swipeDetection;
 
         private void OnEnable()
         {
-            swipeDetection.OnSwipeLeft += Play;
-            swipeDetection.OnSwipeRight += Play;
+            _swipeDetection.OnSwipeLeft += Play;
+            _swipeDetection.OnSwipeRight += Play;
         
         }
 
         private void OnDisable()
         {
-            swipeDetection.OnSwipeLeft -= Play;
-            swipeDetection.OnSwipeRight -= Play;
+            _swipeDetection.OnSwipeLeft -= Play;
+            _swipeDetection.OnSwipeRight -= Play;
         }
 
         private void Play()
         {
-            swipeSound.Play();
+            _swipeSound.Play();
         }
     }
 }

@@ -8,6 +8,8 @@ public class Neighbor: MonoBehaviour
     private const int Row = 3;
     private const int Column = 5;
     private const int MinimumSectors = 3;
+    private const int RotateAngles = 72;
+    private const int FullAngles = 360;
     
     private List<Sector> _foundVerticalSectors;
     private List<Sector> _foundHorizontalSectors;
@@ -195,7 +197,7 @@ public class Neighbor: MonoBehaviour
            0 : 
            Mathf.RoundToInt(currentEulerAngles.y);
        
-       for (var i = currentAngel + 72; i < 360; i += 72)
+       for (var i = currentAngel + RotateAngles; i < FullAngles; i += RotateAngles)
        {
            nextArray = RemainingHorizontalSectors(array, array[0], i);
            if (nextArray.Count == 0) break;
@@ -216,9 +218,9 @@ public class Neighbor: MonoBehaviour
            0 : 
            Mathf.RoundToInt(currentEulerAngles.y);
        
-       var startAngel = currentAngel == 0 ? 360 - 72 : 0;
+       var startAngel = currentAngel == 0 ? FullAngles - RotateAngles : 0;
        
-       for (var i = startAngel; i > 0; i -= 72)
+       for (var i = startAngel; i > 0; i -= RotateAngles)
        {
            var nextArray = RemainingHorizontalSectors(reversArray, reversArray[0], i);
            if (nextArray.Count == 0) break;

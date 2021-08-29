@@ -6,20 +6,13 @@ namespace InputSwipe
 {
    public class SwipeDetection : MonoBehaviour
    {
-      [SerializeField] 
-      private float _minimumDistance = .2f;
-
-      [SerializeField]
-      private float _maxTime = 1f;
-
-      [SerializeField, Range(0f, 1f)] 
-      private float _directionThreshold = .9f;
-
+      [SerializeField] private float _minimumDistance = .2f;
+      [SerializeField] private float _maxTime = 1f;
+      [SerializeField, Range(0f, 1f)] private float _directionThreshold = .9f;
       [SerializeField] private GameObject _trail;
       [SerializeField, Range(0f, 1f)] private float _trailOffsetY = 0.5f;
-      private const float TrailOffsetZ = - 1f;
-
       
+      private const float TrailOffsetZ = - 1f;
 
       private Coroutine _trailCoroutine;   
       private InputPrincipal _inputPrincipal;
