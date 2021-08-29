@@ -3,6 +3,9 @@ using UnityEngine;
 
 public class Sector : MonoBehaviour
 {
+    private const int LayerMaskSector = 1 << 9;
+    private const int LayerMaskPlatform = 1 << 8;
+    
     private SwipeDetection _swipeDetection;
     private Game _game;
     private MeshRenderer _meshRenderer;
@@ -13,9 +16,6 @@ public class Sector : MonoBehaviour
     private int _colorIndex;
     
     private bool _collision = true;
-
-    private const int LayerMaskSector = 1 << 9;
-    private const int LayerMaskPlatform = 1 << 8;
 
     private void Awake()
     {

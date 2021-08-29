@@ -5,6 +5,10 @@ using UnityEngine;
 
 public class Neighbor: MonoBehaviour
 {
+    private const int Row = 3;
+    private const int Column = 5;
+    private const int MinimumSectors = 3;
+    
     private List<Sector> _foundVerticalSectors;
     private List<Sector> _foundHorizontalSectors;
     private List<Sector> _allFoundSectors;
@@ -12,9 +16,7 @@ public class Neighbor: MonoBehaviour
     public event Action<int> OnScoreChanged; 
     public event Action<Sector[]> OnCollectSectors;
     
-    private const int Row = 3;
-    private const int Column = 5;
-    private const int MinimumSectors = 3;
+    
 
   private void Awake()
     {
@@ -31,17 +33,18 @@ public class Neighbor: MonoBehaviour
         Search(bucket, value);
     }
 
-   private Sector[,] FillBucket(int levelsAmount, List<GameObject> sectors)
+   private Sector[,] FillBucket(int levelsAmount, IReadOnlyCollection<GameObject> sectors)
    {
        var bucket = new Sector[levelsAmount, Column];
         for (var levelIndex = 0; levelIndex < levelsAmount; levelIndex++)
         {
             foreach (var item in sectors)
             {
-                var sector = item.GetComponent<Sector>();
-                var level = sector.GetLevel();
-
-                if (levelIndex != level) continue;
+                if(item.TryGetComponent(out Sector sector))
+                {
+                    var level = sector.GetLevel();
+                    if (levelIndex != level) continue;
+                }
                 
                 var angel = Mathf.RoundToInt(item.transform.eulerAngles.y);
                 var index = new SectorsIndex(angel).Value();
@@ -184,13 +187,13 @@ public class Neighbor: MonoBehaviour
    private List<Sector> ClockwiseSearchNext(Sector[] array, Component current)
    {
        var nextArray = new List<Sector>();
-       int currentAngel;
+       var currentEulerAngles = current.transform.eulerAngles;
+       
        if (array.Length == 0) return nextArray;
 
-       if (current.transform.eulerAngles.y < 1)
-           currentAngel = 0;
-       else
-           currentAngel = Mathf.RoundToInt(current.transform.eulerAngles.y);
+       var currentAngel = currentEulerAngles.y < 1 ? 
+           0 : 
+           Mathf.RoundToInt(currentEulerAngles.y);
        
        for (var i = currentAngel + 72; i < 360; i += 72)
        {
@@ -206,13 +209,12 @@ public class Neighbor: MonoBehaviour
    {
        
        if (array.Count <= 0) return;
-       int currentAngel;
+       var currentEulerAngles = current.transform.eulerAngles;
        var reversArray = array.Reverse().ToArray();
        
-       if (current.transform.eulerAngles.y < 1)
-           currentAngel = 0;
-       else
-           currentAngel = Mathf.RoundToInt(current.transform.eulerAngles.y);
+       var currentAngel = currentEulerAngles.y < 1 ? 
+           0 : 
+           Mathf.RoundToInt(currentEulerAngles.y);
        
        var startAngel = currentAngel == 0 ? 360 - 72 : 0;
        

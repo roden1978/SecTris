@@ -3949,7 +3949,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7f322bb81d595c3488c6fd0d08ace2b7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  sectorsPool: {fileID: 1293825868}
+  _sectorsPool: {fileID: 1293825868}
 --- !u!4 &1341016539
 Transform:
   m_ObjectHideFlags: 0
